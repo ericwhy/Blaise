@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Blaise.CodeAnalysis
 {
-    sealed class BinaryExpressionElement : ExpressionElement
+    public sealed class BinaryExpressionElement : ExpressionElement
     {
         public BinaryExpressionElement(ExpressionElement leftExpression, SyntaxToken operatorElement, ExpressionElement rightExpression)
         {

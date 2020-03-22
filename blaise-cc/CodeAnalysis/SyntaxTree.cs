@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Blaise.CodeAnalysis
 {
-    sealed class SyntaxTree
+    public sealed class SyntaxTree
     {
         public SyntaxTree(SyntaxElement root, SyntaxToken endOfFileToken, IEnumerable<string> messages)
         {

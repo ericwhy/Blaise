@@ -1,6 +1,6 @@
 namespace Blaise.CodeAnalysis
 {
-    abstract class ExpressionElement : SyntaxElement
+    public abstract class ExpressionElement : SyntaxElement
     {
     }
 

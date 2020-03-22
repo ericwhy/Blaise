@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Blaise.CodeAnalysis
 {
-    class ElementParser
+    internal sealed class ElementParser
     {
         private readonly SyntaxToken[] _tokens;
         private int _tokenPosition;
@@ -59,15 +59,15 @@ namespace Blaise.CodeAnalysis
             if (Current.Kind == SyntaxKind.OpenParensToken)
             {
                 var openParens = NextToken();
-                var expression = ParseExpression();
+                var expression = ParseExpressionElement();
                 var closeParens = MatchTokenKind(SyntaxKind.CloseParensToken);
                 return new ParentheticalExpressionElement(openParens, expression, closeParens);
             }
             var primaryToken = MatchTokenKind(SyntaxKind.IntegerToken);
-            return new IntegerExpressionElement(primaryToken);
+            return new LiteralExpressionElement(primaryToken);
         }
 
-        private ExpressionElement ParseExpression()
+        private ExpressionElement ParseExpressionElement()
         {
             return ParseTermElement();
         }

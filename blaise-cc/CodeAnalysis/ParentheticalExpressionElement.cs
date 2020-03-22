@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Blaise.CodeAnalysis
 {
-    sealed class ParentheticalExpressionElement : ExpressionElement
+    public sealed class ParentheticalExpressionElement : ExpressionElement
     {
         public ParentheticalExpressionElement(SyntaxElement openParensToken, ExpressionElement expression, SyntaxElement closeParensToken)
         {

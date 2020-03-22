@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Blaise.CodeAnalysis
 {
-    class SyntaxToken : SyntaxElement
+    public sealed class SyntaxToken : SyntaxElement
     {
         public SyntaxToken(SyntaxKind kind, int position, string text, object value)
         {

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Blaise.CodeAnalysis
 {
-    class LexicalAnalyzer
+    internal sealed class LexicalAnalyzer
     {
         private readonly string _scanText;
         private int _scanPosition;

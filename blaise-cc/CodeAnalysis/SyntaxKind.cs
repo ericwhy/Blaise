@@ -1,18 +1,21 @@
 namespace Blaise.CodeAnalysis
 {
-    enum SyntaxKind
+    public enum SyntaxKind
     {
-        IntegerToken,
+        // Tokens
+        BadToken,
+        EndOfFileToken,
         WhitespaceToken,
+        IntegerToken,
         PlusToken,
         MinusToken,
         SplatToken,
         SlashToken,
         OpenParensToken,
         CloseParensToken,
-        BadToken,
-        EndOfFileToken,
-        IntegerExpression,
+
+        // Expressions
+        LiteralExpression,
         BinaryExpression,
         ParentheticalExpression
     }

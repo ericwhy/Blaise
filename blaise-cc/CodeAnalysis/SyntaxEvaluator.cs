@@ -3,7 +3,7 @@
 namespace Blaise.CodeAnalysis
 {
 
-    class SyntaxEvaluator
+    public sealed class SyntaxEvaluator
     {
         private readonly SyntaxElement _root;
 
@@ -19,9 +19,9 @@ namespace Blaise.CodeAnalysis
 
         private int EvaluateExpression(SyntaxElement expression)
         {
-            if (expression is IntegerExpressionElement integerExpression)
+            if (expression is LiteralExpressionElement integerExpression)
             {
-                return (int)integerExpression.IntegerToken.Value;
+                return (int)integerExpression.LiteralToken.Value;
             }
             if (expression is BinaryExpressionElement binaryExpression)
             {
