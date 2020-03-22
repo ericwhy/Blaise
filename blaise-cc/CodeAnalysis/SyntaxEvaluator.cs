@@ -1,14 +1,15 @@
 ﻿using System;
+using Blaise.CodeAnalysis.Binding;
 using Blaise.CodeAnalysis.Syntax;
 
 namespace Blaise.CodeAnalysis
 {
 
-    public sealed class SyntaxEvaluator
+    internal sealed class SyntaxEvaluator
     {
-        private readonly SyntaxElement _root;
+        private readonly BoundExpression _root;
 
-        public SyntaxEvaluator(SyntaxElement root)
+        public SyntaxEvaluator(BoundExpression root)
         {
             _root = root;
         }
@@ -18,47 +19,43 @@ namespace Blaise.CodeAnalysis
             return EvaluateExpression(_root);
         }
 
-        private int EvaluateExpression(SyntaxElement expression)
+        private int EvaluateExpression(BoundExpression expression)
         {
-            if (expression is LiteralExpressionElement integerExpression)
+            if (expression is BoundLiteralExpression literalExpression)
             {
-                return (int)integerExpression.LiteralToken.Value;
+                return (int)literalExpression.BoundValue;
             }
-            if (expression is UnaryExpressionElement unaryExpression)
+            if (expression is BoundUnaryExpression unaryExpression)
             {
                 var operand = EvaluateExpression(unaryExpression.OperandExpression);
-                switch (unaryExpression.OperatorElement.Kind)
+                switch (unaryExpression.OperatorKind)
                 {
-                    case SyntaxKind.PlusToken:
+                    case BoundUnaryOperatorKind.Identity:
                         return operand;
-                    case SyntaxKind.MinusToken:
+                    case BoundUnaryOperatorKind.Negation:
                         return -operand;
                     default:
-                        throw new ArgumentException($"ERROR: Unexpected unary operator {unaryExpression.OperatorElement.Kind}");
+                        throw new ArgumentException($"ERROR: Unexpected unary operator {unaryExpression.OperatorKind}");
                 }
             }
-            if (expression is BinaryExpressionElement binaryExpression)
+            if (expression is BoundBinaryExpression binaryExpression)
             {
                 var leftOperand = EvaluateExpression(binaryExpression.LeftExpression);
                 var rightOperand = EvaluateExpression(binaryExpression.RightExpression);
 
-                switch (binaryExpression.OperatorElement.Kind)
+                switch (binaryExpression.OperatorKind)
                 {
-                    case SyntaxKind.PlusToken:
+                    case BoundBinaryOperatorKind.Addition:
                         return leftOperand + rightOperand;
-                    case SyntaxKind.MinusToken:
+                    case BoundBinaryOperatorKind.Subtraction:
                         return leftOperand - rightOperand;
-                    case SyntaxKind.SplatToken:
+                    case BoundBinaryOperatorKind.Multiplication:
                         return leftOperand * rightOperand;
-                    case SyntaxKind.SlashToken:
+                    case BoundBinaryOperatorKind.Division:
                         return leftOperand / rightOperand;
                     default:
-                        throw new ArgumentException($"Unexpected binary operator {binaryExpression.OperatorElement.Kind}.");
+                        throw new ArgumentException($"Unexpected binary operator {binaryExpression.OperatorKind}.");
                 }
-            }
-            if (expression is ParentheticalExpressionElement parentheticalExpression)
-            {
-                return EvaluateExpression(parentheticalExpression.Expression);
             }
             throw new ArgumentException($"Unexpected expression type {expression.Kind}.");
         }

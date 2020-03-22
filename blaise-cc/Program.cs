@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Blaise.CodeAnalysis;
+using Blaise.CodeAnalysis.Binding;
 using Blaise.CodeAnalysis.Syntax;
 
 namespace Blaise
@@ -29,23 +30,26 @@ namespace Blaise
                     continue;
                 }
                 var syntaxTree = SyntaxTree.ParseTree(line);
+                var binder = new ExpressionBinder();
+                var boundExpression = binder.BindExpression(syntaxTree.Root);
+                var messages = syntaxTree.Messages.Concat(binder.Messages).ToArray();
+
                 if (showTree)
                 {
                     Console.ForegroundColor = ConsoleColor.DarkCyan;
                     PrettyPrint(syntaxTree.Root);
                     Console.ResetColor();
                 }
-                if (!syntaxTree.Messages.Any())
+                if (!messages.Any())
                 {
-                    var evaluator = new SyntaxEvaluator(syntaxTree.Root);
+                    var evaluator = new SyntaxEvaluator(boundExpression);
                     var result = evaluator.Evaluate();
                     Console.WriteLine($"Result := {result}");
-
                 }
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.DarkRed;
-                    foreach (var message in syntaxTree.Messages)
+                    foreach (var message in messages)
                     {
                         Console.WriteLine(message);
                     }
