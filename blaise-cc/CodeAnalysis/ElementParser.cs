@@ -69,14 +69,26 @@ namespace Blaise.CodeAnalysis
 
         private ExpressionElement ParseExpressionElement(int parentPrecedence = 0)
         {
-            var nextExpression = ParsePrimaryExpression();
+            ExpressionElement nextExpression;
+            var unaryOperatorPrecedence = Current.Kind.GetUnaryOperatorPrecedence();
+            if (unaryOperatorPrecedence > 0 && unaryOperatorPrecedence >= parentPrecedence)
+            {
+                var operatorToken = NextToken();
+                var operandExpression = ParseExpressionElement(unaryOperatorPrecedence);
+                nextExpression = new UnaryExpressionElement(operatorToken, operandExpression);
+            }
+            else
+            {
+                nextExpression = ParsePrimaryExpression();
+
+            }
             while (true)
             {
                 var precedence = Current.Kind.GetBinaryOperatorPrecedence();
                 if (precedence == 0 || precedence <= parentPrecedence)
                     break;
                 var operatorToken = NextToken();
-                var rightExpression = ParsePrimaryExpression();
+                var rightExpression = ParseExpressionElement(precedence);
                 nextExpression = new BinaryExpressionElement(nextExpression, operatorToken, rightExpression);
             }
             return nextExpression;

@@ -23,6 +23,19 @@ namespace Blaise.CodeAnalysis
             {
                 return (int)integerExpression.LiteralToken.Value;
             }
+            if (expression is UnaryExpressionElement unaryExpression)
+            {
+                var operand = EvaluateExpression(unaryExpression.OperandExpression);
+                switch (unaryExpression.OperatorElement.Kind)
+                {
+                    case SyntaxKind.PlusToken:
+                        return operand;
+                    case SyntaxKind.MinusToken:
+                        return -operand;
+                    default:
+                        throw new ArgumentException($"ERROR: Unexpected unary operator {unaryExpression.OperatorElement.Kind}");
+                }
+            }
             if (expression is BinaryExpressionElement binaryExpression)
             {
                 var leftOperand = EvaluateExpression(binaryExpression.LeftExpression);

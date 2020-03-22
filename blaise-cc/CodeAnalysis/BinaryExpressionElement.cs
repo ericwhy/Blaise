@@ -24,5 +24,4 @@ namespace Blaise.CodeAnalysis
             yield return RightExpression;
         }
     }
-
 }

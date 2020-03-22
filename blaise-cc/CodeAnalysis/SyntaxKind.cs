@@ -16,6 +16,7 @@ namespace Blaise.CodeAnalysis
 
         // Expressions
         LiteralExpression,
+        UnaryExpression,
         BinaryExpression,
         ParentheticalExpression
     }
