@@ -67,37 +67,24 @@ namespace Blaise.CodeAnalysis
             return new LiteralExpressionElement(primaryToken);
         }
 
-        private ExpressionElement ParseExpressionElement()
+        private ExpressionElement ParseExpressionElement(int parentPrecedence = 0)
         {
-            return ParseTermElement();
-        }
-        private ExpressionElement ParseTermElement()
-        {
-            var left = ParseFactorElement();
-            while (Current.Kind == SyntaxKind.PlusToken || Current.Kind == SyntaxKind.MinusToken)
+            var nextExpression = ParsePrimaryExpression();
+            while (true)
             {
+                var precedence = Current.Kind.GetBinaryOperatorPrecedence();
+                if (precedence == 0 || precedence <= parentPrecedence)
+                    break;
                 var operatorToken = NextToken();
-                var right = ParseFactorElement();
-                left = new BinaryExpressionElement(left, operatorToken, right);
+                var rightExpression = ParsePrimaryExpression();
+                nextExpression = new BinaryExpressionElement(nextExpression, operatorToken, rightExpression);
             }
-            return left;
-        }
-
-        private ExpressionElement ParseFactorElement()
-        {
-            var left = ParsePrimaryExpression();
-            while (Current.Kind == SyntaxKind.SplatToken || Current.Kind == SyntaxKind.SlashToken)
-            {
-                var operatorToken = NextToken();
-                var right = ParsePrimaryExpression();
-                left = new BinaryExpressionElement(left, operatorToken, right);
-            }
-            return left;
+            return nextExpression;
         }
 
         public SyntaxTree ParseTree()
         {
-            var element = ParseTermElement();
+            var element = ParseExpressionElement();
             var endOfFileToken = MatchTokenKind(SyntaxKind.EndOfFileToken);
             return new SyntaxTree(element, endOfFileToken, Messages);
         }
