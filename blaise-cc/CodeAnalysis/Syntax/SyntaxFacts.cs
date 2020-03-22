@@ -1,3 +1,5 @@
+using System;
+
 namespace Blaise.CodeAnalysis.Syntax
 {
     internal static class SyntaxFacts
@@ -28,7 +30,18 @@ namespace Blaise.CodeAnalysis.Syntax
             }
         }
 
-
+        public static SyntaxKind GetKeywordKind(string token)
+        {
+            switch (token)
+            {
+                case "True":
+                    return SyntaxKind.TrueKeyword;
+                case "False":
+                    return SyntaxKind.FalseKeyword;
+                default:
+                    return SyntaxKind.IdentifierToken;
+            }
+        }
     }
 
 }

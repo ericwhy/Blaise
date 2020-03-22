@@ -14,20 +14,20 @@ namespace Blaise.CodeAnalysis
             _root = root;
         }
 
-        public int Evaluate()
+        public object Evaluate()
         {
             return EvaluateExpression(_root);
         }
 
-        private int EvaluateExpression(BoundExpression expression)
+        private object EvaluateExpression(BoundExpression expression)
         {
             if (expression is BoundLiteralExpression literalExpression)
             {
-                return (int)literalExpression.BoundValue;
+                return literalExpression.BoundValue;
             }
             if (expression is BoundUnaryExpression unaryExpression)
             {
-                var operand = EvaluateExpression(unaryExpression.OperandExpression);
+                var operand = (int)EvaluateExpression(unaryExpression.OperandExpression);
                 switch (unaryExpression.OperatorKind)
                 {
                     case BoundUnaryOperatorKind.Identity:
@@ -40,8 +40,8 @@ namespace Blaise.CodeAnalysis
             }
             if (expression is BoundBinaryExpression binaryExpression)
             {
-                var leftOperand = EvaluateExpression(binaryExpression.LeftExpression);
-                var rightOperand = EvaluateExpression(binaryExpression.RightExpression);
+                var leftOperand = (int)EvaluateExpression(binaryExpression.LeftExpression);
+                var rightOperand = (int)EvaluateExpression(binaryExpression.RightExpression);
 
                 switch (binaryExpression.OperatorKind)
                 {

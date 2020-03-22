@@ -56,15 +56,29 @@ namespace Blaise.CodeAnalysis.Syntax
 
         private ExpressionElement ParsePrimaryExpression()
         {
-            if (Current.Kind == SyntaxKind.OpenParensToken)
+            switch (Current.Kind)
             {
-                var openParens = NextToken();
-                var expression = ParseExpressionElement();
-                var closeParens = MatchTokenKind(SyntaxKind.CloseParensToken);
-                return new ParentheticalExpressionElement(openParens, expression, closeParens);
+                case SyntaxKind.OpenParensToken:
+                    {
+                        var openParens = NextToken();
+                        var expression = ParseExpressionElement();
+                        var closeParens = MatchTokenKind(SyntaxKind.CloseParensToken);
+                        return new ParentheticalExpressionElement(openParens, expression, closeParens);
+                    }
+
+                case SyntaxKind.FalseKeyword:
+                case SyntaxKind.TrueKeyword:
+                    {
+                        var keywordToken = NextToken();
+                        var value = keywordToken.Kind == SyntaxKind.TrueKeyword;
+                        return new LiteralExpressionElement(keywordToken, value);
+                    }
+                default:
+                    {
+                        var primaryToken = MatchTokenKind(SyntaxKind.IntegerToken);
+                        return new LiteralExpressionElement(primaryToken);
+                    }
             }
-            var primaryToken = MatchTokenKind(SyntaxKind.IntegerToken);
-            return new LiteralExpressionElement(primaryToken);
         }
 
         private ExpressionElement ParseExpressionElement(int parentPrecedence = 0)

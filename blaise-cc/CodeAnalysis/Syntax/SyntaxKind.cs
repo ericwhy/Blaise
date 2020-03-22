@@ -13,12 +13,15 @@ namespace Blaise.CodeAnalysis.Syntax
         SlashToken,
         OpenParensToken,
         CloseParensToken,
-
+        IdentifierToken,
+        // Keywords
+        TrueKeyword,
+        FalseKeyword,
         // Expressions
         LiteralExpression,
         UnaryExpression,
         BinaryExpression,
-        ParentheticalExpression
+        ParentheticalExpression,
     }
 
 }

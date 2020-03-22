@@ -79,6 +79,18 @@ namespace Blaise.CodeAnalysis.Syntax
                 var token = GetTextFragment();
                 return new SyntaxToken(SyntaxKind.WhitespaceToken, startsAt, token, null);
             }
+            if (char.IsLetter(Current))
+            {
+                var startsAt = StartTextFragment();
+                while (char.IsLetter(Current))
+                {
+                    MoveNext();
+                }
+                var token = GetTextFragment();
+                var kind = SyntaxFacts.GetKeywordKind(token);
+                return new SyntaxToken(kind, startsAt, token, null);
+            }
+
             switch (Current)
             {
                 case '+':
