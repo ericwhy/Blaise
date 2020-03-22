@@ -1,4 +1,4 @@
-namespace Blaise.CodeAnalysis
+namespace Blaise.CodeAnalysis.Syntax
 {
     public abstract class ExpressionElement : SyntaxElement
     {

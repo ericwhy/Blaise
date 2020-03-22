@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Blaise.CodeAnalysis
+namespace Blaise.CodeAnalysis.Syntax
 {
     internal sealed class LexicalAnalyzer
     {

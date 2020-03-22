@@ -1,4 +1,5 @@
 ﻿using System;
+using Blaise.CodeAnalysis.Syntax;
 
 namespace Blaise.CodeAnalysis
 {

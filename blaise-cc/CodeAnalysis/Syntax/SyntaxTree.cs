@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Blaise.CodeAnalysis
+namespace Blaise.CodeAnalysis.Syntax
 {
     public sealed class SyntaxTree
     {
