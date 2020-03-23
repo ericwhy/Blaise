@@ -14,21 +14,24 @@ namespace Blaise.CodeAnalysis.Syntax
             _scanText = scanText;
         }
 
-        private char Current
+        private char Current => Peek();
+        private char Lookahead => Peek(1);
+
+        private char Peek(int offset = 0)
         {
-            get
+            var charOffset = _scanPosition + offset;
+            if (charOffset >= _scanText.Length)
             {
-                if (_scanPosition >= _scanText.Length)
-                {
-                    return '\0';
-                }
-                return _scanText[_scanPosition];
+                return '\0';
             }
+            return _scanText[_scanPosition];
         }
 
-        private int MoveNext()
+        private int MoveNext(int charsToMove = 1)
         {
-            return _scanPosition++;
+            var currentPosition = _scanPosition;
+            _scanPosition += charsToMove;
+            return currentPosition;
         }
 
         private int StartTextFragment()
@@ -105,6 +108,16 @@ namespace Blaise.CodeAnalysis.Syntax
                     return new SyntaxToken(SyntaxKind.OpenParensToken, MoveNext(), "(", null);
                 case ')':
                     return new SyntaxToken(SyntaxKind.CloseParensToken, MoveNext(), ")", null);
+                case '!':
+                    return new SyntaxToken(SyntaxKind.BangToken, MoveNext(), "!", null);
+                case '&':
+                    if (Lookahead == '&')
+                        return new SyntaxToken(SyntaxKind.AmpersandAmpersandToken, MoveNext(2), "&&", null);
+                    break;
+                case '|':
+                    if (Lookahead == '|')
+                        return new SyntaxToken(SyntaxKind.PipePipeToken, MoveNext(2), "||", null);
+                    break;
             }
             // Unexpected token
             int errorPosition = StartTextFragment();
