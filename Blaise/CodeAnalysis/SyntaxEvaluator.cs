@@ -1,6 +1,5 @@
 ﻿using System;
 using Blaise.CodeAnalysis.Binding;
-using Blaise.CodeAnalysis.Syntax;
 
 namespace Blaise.CodeAnalysis
 {

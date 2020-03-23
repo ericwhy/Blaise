@@ -7,7 +7,7 @@ namespace Blaise.CodeAnalysis.Syntax
         private readonly string _scanText;
         private int _scanPosition;
         private int _startToken;
-        private List<string> _messages = new List<string>();
+        private DiagnosticBag _messages = new DiagnosticBag();
 
         public LexicalAnalyzer(string scanText)
         {
@@ -68,7 +68,7 @@ namespace Blaise.CodeAnalysis.Syntax
                 var token = GetTextFragment();
                 if (!int.TryParse(token, out var tokenValue))
                 {
-                    Messages.Add($"ERROR: The value {token} is not a valid Integer value.");
+                    Messages.ReportInvalidInteger(new TextSpan(startsAt, token.Length), token, typeof(int));
                 }
                 return new SyntaxToken(SyntaxKind.IntegerToken, startsAt, token, tokenValue);
             }
@@ -129,11 +129,11 @@ namespace Blaise.CodeAnalysis.Syntax
             int errorPosition = StartTextFragment();
             MoveNext();
             string errorCh = GetTextFragment();
-            Messages.Add($"ERROR: Unexpected character '{errorCh}' at position {errorPosition}.");
+            Messages.ReportInvalidCharacter(errorPosition, errorCh);
             return new SyntaxToken(SyntaxKind.BadToken, errorPosition, errorCh, null);
         }
 
-        public List<string> Messages => _messages;
+        public DiagnosticBag Messages => _messages;
     }
 
 }

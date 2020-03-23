@@ -30,9 +30,9 @@ namespace Blaise
                     continue;
                 }
                 var syntaxTree = SyntaxTree.ParseTree(line);
-                var binder = new ExpressionBinder();
-                var boundExpression = binder.BindExpression(syntaxTree.Root);
-                var messages = syntaxTree.Messages.Concat(binder.Messages).ToArray();
+                var compilation = new Compilation(syntaxTree);
+                var result = compilation.Evaluate();
+                var messages = result.Messages;
 
                 if (showTree)
                 {
@@ -42,18 +42,29 @@ namespace Blaise
                 }
                 if (!messages.Any())
                 {
-                    var evaluator = new SyntaxEvaluator(boundExpression);
-                    var result = evaluator.Evaluate();
-                    Console.WriteLine($"Result := {result}");
+                    Console.WriteLine($"Result := {result.Value}");
                 }
                 else
                 {
-                    Console.ForegroundColor = ConsoleColor.DarkRed;
                     foreach (var message in messages)
                     {
+                        Console.WriteLine();
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
                         Console.WriteLine(message);
+                        Console.ResetColor();
+
+                        var prefix = line.Substring(0, message.Span.Start);
+                        var error = line.Substring(message.Span.Start, message.Span.Length);
+                        var suffix = line.Substring(message.Span.End);
+
+                        Console.Write("    ");
+                        Console.Write(prefix);
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
+                        Console.Write(error);
+                        Console.ResetColor();
+                        Console.WriteLine(suffix);
                     }
-                    Console.ResetColor();
+                    Console.WriteLine();
                 }
             }
         }

@@ -6,7 +6,8 @@ namespace Blaise.CodeAnalysis.Syntax
     {
         private readonly SyntaxToken[] _tokens;
         private int _tokenPosition;
-        private List<string> _messages = new List<string>();
+        private DiagnosticBag _messages = new DiagnosticBag();
+        public DiagnosticBag Messages => _messages;
         public ElementParser(string text)
         {
             var tokens = new List<SyntaxToken>();
@@ -50,7 +51,7 @@ namespace Blaise.CodeAnalysis.Syntax
             {
                 return NextToken();
             }
-            Messages.Add($"ERROR: Unexpected token <{Current.Kind}> when expecting <{kind}>.");
+            Messages.ReportUnexpectedToken(Current.TextSpan, Current.Kind, kind);
             return new SyntaxToken(kind, Current.Position, string.Empty, null);
         }
 
@@ -114,7 +115,6 @@ namespace Blaise.CodeAnalysis.Syntax
             var endOfFileToken = MatchTokenKind(SyntaxKind.EndOfFileToken);
             return new SyntaxTree(element, endOfFileToken, Messages);
         }
-        public List<string> Messages => _messages;
     }
 
 }

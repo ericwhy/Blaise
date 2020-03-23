@@ -6,8 +6,8 @@ namespace Blaise.CodeAnalysis.Binding
 {
     internal sealed class ExpressionBinder
     {
-        private readonly List<string> _messages = new List<string>();
-        public IEnumerable<string> Messages => _messages;
+        private readonly DiagnosticBag _messages = new DiagnosticBag();
+        public DiagnosticBag Messages => _messages;
         public BoundExpression BindExpression(SyntaxElement expression)
         {
             switch (expression.Kind)
@@ -32,7 +32,7 @@ namespace Blaise.CodeAnalysis.Binding
             var boundOperator = BoundBinaryOperator.BindBinaryOperator(expression.OperatorElement.Kind, boundLeftOperandExpression.BoundType, boundRightOperandExpression.BoundType);
             if (boundOperator == null)
             {
-                _messages.Add($"BINDERR: Binary operator {expression.OperatorElement.Text} is not defined for types {boundLeftOperandExpression.BoundType} and {boundRightOperandExpression.BoundType}.");
+                _messages.ReportUndefinedBinaryOperator(expression.OperatorElement.TextSpan, expression.OperatorElement.Text, boundLeftOperandExpression.BoundType, boundRightOperandExpression.BoundType);
                 return boundLeftOperandExpression;
             }
             return new BoundBinaryExpression(boundLeftOperandExpression, boundRightOperandExpression, boundOperator);
@@ -44,7 +44,7 @@ namespace Blaise.CodeAnalysis.Binding
             var boundOperator = BoundUnaryOperator.BindUnaryOperator(expression.OperatorElement.Kind, boundOperandExpression.BoundType);
             if (boundOperator == null)
             {
-                _messages.Add($"BINDERR: Unary operator {expression.OperatorElement.Text} is not defined for type {boundOperandExpression.BoundType}.");
+                _messages.ReportUndefindedUnaryOperator(expression.OperatorElement.TextSpan, expression.OperatorElement.Text, boundOperandExpression.BoundType);
                 return boundOperandExpression;
             }
             return new BoundUnaryExpression(boundOperator, boundOperandExpression);

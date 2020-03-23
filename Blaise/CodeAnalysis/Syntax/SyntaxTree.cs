@@ -5,7 +5,7 @@ namespace Blaise.CodeAnalysis.Syntax
 {
     public sealed class SyntaxTree
     {
-        public SyntaxTree(SyntaxElement root, SyntaxToken endOfFileToken, IEnumerable<string> messages)
+        public SyntaxTree(SyntaxElement root, SyntaxToken endOfFileToken, IEnumerable<Diagnostic> messages)
         {
             Root = root;
             EndOfFileToken = endOfFileToken;
@@ -14,7 +14,7 @@ namespace Blaise.CodeAnalysis.Syntax
 
         public SyntaxElement Root { get; }
         public SyntaxToken EndOfFileToken { get; }
-        public IReadOnlyList<string> Messages { get; }
+        public IReadOnlyList<Diagnostic> Messages { get; }
 
         public static SyntaxTree ParseTree(string source)
         {
