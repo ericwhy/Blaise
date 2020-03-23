@@ -18,6 +18,8 @@ namespace Blaise.CodeAnalysis.Binding
                     return BindUnaryExpression((UnaryExpressionElement)expression);
                 case SyntaxKind.BinaryExpression:
                     return BindBinaryExpression((BinaryExpressionElement)expression);
+                case SyntaxKind.ParentheticalExpression:
+                    return BindExpression(((ParentheticalExpressionElement)expression).Expression);
                 default:
                     throw new ArgumentException($"ERROR: Unknown expression type {expression.Kind}.");
             }
