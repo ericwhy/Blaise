@@ -28,7 +28,7 @@ namespace Blaise.CodeAnalysis
             if (expression is BoundUnaryExpression unaryExpression)
             {
                 var operand = EvaluateExpression(unaryExpression.OperandExpression);
-                switch (unaryExpression.OperatorKind)
+                switch (unaryExpression.BoundOperator.OperatorKind)
                 {
                     case BoundUnaryOperatorKind.ArithmeticIdentity:
                         return (int)operand;
@@ -37,7 +37,7 @@ namespace Blaise.CodeAnalysis
                     case BoundUnaryOperatorKind.LogicalNegation:
                         return !(bool)operand;
                     default:
-                        throw new ArgumentException($"ERROR: Unexpected unary operator {unaryExpression.OperatorKind}");
+                        throw new ArgumentException($"ERROR: Unexpected unary operator {unaryExpression.BoundOperator.OperatorKind}");
                 }
             }
             if (expression is BoundBinaryExpression binaryExpression)
@@ -45,7 +45,7 @@ namespace Blaise.CodeAnalysis
                 var leftOperand = EvaluateExpression(binaryExpression.LeftExpression);
                 var rightOperand = EvaluateExpression(binaryExpression.RightExpression);
 
-                switch (binaryExpression.OperatorKind)
+                switch (binaryExpression.BoundOperator.OperatorKind)
                 {
                     case BoundBinaryOperatorKind.Addition:
                         return (int)leftOperand + (int)rightOperand;
@@ -60,7 +60,7 @@ namespace Blaise.CodeAnalysis
                     case BoundBinaryOperatorKind.LogicalOr:
                         return (bool)leftOperand || (bool)rightOperand;
                     default:
-                        throw new ArgumentException($"Unexpected binary operator {binaryExpression.OperatorKind}.");
+                        throw new ArgumentException($"Unexpected binary operator {binaryExpression.BoundOperator.OperatorKind}.");
                 }
             }
             throw new ArgumentException($"Unexpected expression type {expression.Kind}.");

@@ -4,12 +4,12 @@ namespace Blaise.CodeAnalysis.Binding
 {
     internal sealed class BoundUnaryExpression : BoundExpression
     {
-        public BoundUnaryExpression(BoundUnaryOperatorKind operatorKind, BoundExpression operandExpression)
+        public BoundUnaryExpression(BoundUnaryOperator boundOperator, BoundExpression operandExpression)
         {
-            OperatorKind = operatorKind;
+            BoundOperator = boundOperator;
             OperandExpression = operandExpression;
         }
-        public BoundUnaryOperatorKind OperatorKind { get; }
+        public BoundUnaryOperator BoundOperator { get; }
         public BoundExpression OperandExpression { get; }
         public override Type BoundType => OperandExpression.BoundType;
         public override BoundNodeKind Kind => BoundNodeKind.UnaryExpression;
