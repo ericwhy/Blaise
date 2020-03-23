@@ -14,7 +14,7 @@ namespace Blaise.CodeAnalysis.Binding
         public BoundExpression RightExpression { get; }
         public BoundBinaryOperator BoundOperator { get; }
 
-        public override Type BoundType => LeftExpression.BoundType;
+        public override Type BoundType => BoundOperator.ResultType;
         public override BoundNodeKind Kind => BoundNodeKind.BinaryExpression;
     }
 }

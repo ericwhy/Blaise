@@ -11,7 +11,7 @@ namespace Blaise.CodeAnalysis.Binding
         }
         public BoundUnaryOperator BoundOperator { get; }
         public BoundExpression OperandExpression { get; }
-        public override Type BoundType => OperandExpression.BoundType;
+        public override Type BoundType => BoundOperator.ResultType;
         public override BoundNodeKind Kind => BoundNodeKind.UnaryExpression;
     }
 }

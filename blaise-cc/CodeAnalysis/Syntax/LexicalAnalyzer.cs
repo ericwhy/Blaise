@@ -24,7 +24,7 @@ namespace Blaise.CodeAnalysis.Syntax
             {
                 return '\0';
             }
-            return _scanText[_scanPosition];
+            return _scanText[charOffset];
         }
 
         private int MoveNext(int charsToMove = 1)
@@ -110,6 +110,8 @@ namespace Blaise.CodeAnalysis.Syntax
                     return new SyntaxToken(SyntaxKind.CloseParensToken, MoveNext(), ")", null);
                 case '!':
                     return new SyntaxToken(SyntaxKind.BangToken, MoveNext(), "!", null);
+                case '=':
+                    return new SyntaxToken(SyntaxKind.EqualsToken, MoveNext(), "=", null);
                 case '&':
                     if (Lookahead == '&')
                         return new SyntaxToken(SyntaxKind.AmpersandAmpersandToken, MoveNext(2), "&&", null);
@@ -117,6 +119,10 @@ namespace Blaise.CodeAnalysis.Syntax
                 case '|':
                     if (Lookahead == '|')
                         return new SyntaxToken(SyntaxKind.PipePipeToken, MoveNext(2), "||", null);
+                    break;
+                case '<':
+                    if (Lookahead == '>')
+                        return new SyntaxToken(SyntaxKind.LtGtToken, MoveNext(2), "<>", null);
                     break;
             }
             // Unexpected token

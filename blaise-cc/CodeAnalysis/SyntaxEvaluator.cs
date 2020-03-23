@@ -59,6 +59,10 @@ namespace Blaise.CodeAnalysis
                         return (bool)leftOperand && (bool)rightOperand;
                     case BoundBinaryOperatorKind.LogicalOr:
                         return (bool)leftOperand || (bool)rightOperand;
+                    case BoundBinaryOperatorKind.Equals:
+                        return Equals(leftOperand, rightOperand);
+                    case BoundBinaryOperatorKind.NotEquals:
+                        return !Equals(leftOperand, rightOperand);
                     default:
                         throw new ArgumentException($"Unexpected binary operator {binaryExpression.BoundOperator.OperatorKind}.");
                 }

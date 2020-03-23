@@ -14,6 +14,8 @@ namespace Blaise.CodeAnalysis.Syntax
         BangToken,
         AmpersandAmpersandToken,
         PipePipeToken,
+        EqualsToken,
+        LtGtToken,
         OpenParensToken,
         CloseParensToken,
         IdentifierToken,
