@@ -11,6 +11,7 @@ namespace Blaise
     {
         private static void Main()
         {
+            var variableTable = new Dictionary<string, object>();
             bool showTree = false;
             while (true)
             {
@@ -31,7 +32,7 @@ namespace Blaise
                 }
                 var syntaxTree = SyntaxTree.ParseTree(line);
                 var compilation = new Compilation(syntaxTree);
-                var result = compilation.Evaluate();
+                var result = compilation.Evaluate(variableTable);
                 var messages = result.Messages;
 
                 if (showTree)

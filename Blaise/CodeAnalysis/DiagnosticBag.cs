@@ -48,5 +48,11 @@ namespace Blaise.CodeAnalysis
             var message = $"Binary operator {operatorText} is not defined for types {leftExpressionBoundType} and {rightExpressionBoundType}.";
             Report(textSpan, message);
         }
+
+        internal void ReportUndefinedName(TextSpan textSpan, string name)
+        {
+            var message = $"Variable name {name} not found.";
+            Report(textSpan, message);
+        }
     }
 }

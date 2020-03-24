@@ -112,6 +112,11 @@ namespace Blaise.CodeAnalysis.Syntax
                     return new SyntaxToken(SyntaxKind.BangToken, MoveNext(), "!", null);
                 case '=':
                     return new SyntaxToken(SyntaxKind.EqualsToken, MoveNext(), "=", null);
+                case ':':
+                    if (Lookahead == '=')
+                        return new SyntaxToken(SyntaxKind.ColonEqualsToken, MoveNext(2), ":=", null);
+                    else
+                        return new SyntaxToken(SyntaxKind.ColonToken, MoveNext(), ":", null);
                 case '&':
                     if (Lookahead == '&')
                         return new SyntaxToken(SyntaxKind.AmpersandAmpersandToken, MoveNext(2), "&&", null);

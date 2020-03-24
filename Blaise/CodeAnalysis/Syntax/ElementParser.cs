@@ -62,7 +62,7 @@ namespace Blaise.CodeAnalysis.Syntax
                 case SyntaxKind.OpenParensToken:
                     {
                         var openParens = NextToken();
-                        var expression = ParseExpressionElement();
+                        var expression = ParseBinaryExpressionElement();
                         var closeParens = MatchTokenKind(SyntaxKind.CloseParensToken);
                         return new ParentheticalExpressionElement(openParens, expression, closeParens);
                     }
@@ -74,6 +74,11 @@ namespace Blaise.CodeAnalysis.Syntax
                         var value = keywordToken.Kind == SyntaxKind.TrueKeyword;
                         return new LiteralExpressionElement(keywordToken, value);
                     }
+                case SyntaxKind.IdentifierToken:
+                    {
+                        var identifierToken = NextToken();
+                        return new NameExpressionElement(identifierToken);
+                    }
                 default:
                     {
                         var primaryToken = MatchTokenKind(SyntaxKind.IntegerToken);
@@ -81,15 +86,30 @@ namespace Blaise.CodeAnalysis.Syntax
                     }
             }
         }
-
-        private ExpressionElement ParseExpressionElement(int parentPrecedence = 0)
+        private ExpressionElement ParseExpressionElement()
+        {
+            return ParseAssignmentExpressionElement();
+        }
+        private ExpressionElement ParseAssignmentExpressionElement()
+        {
+            if (Current.Kind == SyntaxKind.IdentifierToken &&
+                LookAhead.Kind == SyntaxKind.ColonEqualsToken)
+            {
+                var identifierToken = NextToken();
+                var operatorToken = NextToken();
+                var rightExpression = ParseAssignmentExpressionElement();
+                return new AssignmentExpressionElement(identifierToken, operatorToken, rightExpression);
+            }
+            return ParseBinaryExpressionElement();
+        }
+        private ExpressionElement ParseBinaryExpressionElement(int parentPrecedence = 0)
         {
             ExpressionElement nextExpression;
             var unaryOperatorPrecedence = Current.Kind.GetUnaryOperatorPrecedence();
             if (unaryOperatorPrecedence > 0 && unaryOperatorPrecedence >= parentPrecedence)
             {
                 var operatorToken = NextToken();
-                var operandExpression = ParseExpressionElement(unaryOperatorPrecedence);
+                var operandExpression = ParseBinaryExpressionElement(unaryOperatorPrecedence);
                 nextExpression = new UnaryExpressionElement(operatorToken, operandExpression);
             }
             else
@@ -103,7 +123,7 @@ namespace Blaise.CodeAnalysis.Syntax
                 if (precedence == 0 || precedence <= parentPrecedence)
                     break;
                 var operatorToken = NextToken();
-                var rightExpression = ParseExpressionElement(precedence);
+                var rightExpression = ParseBinaryExpressionElement(precedence);
                 nextExpression = new BinaryExpressionElement(nextExpression, operatorToken, rightExpression);
             }
             return nextExpression;

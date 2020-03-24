@@ -12,6 +12,8 @@ namespace Blaise.CodeAnalysis.Syntax
         SplatToken,
         SlashToken,
         BangToken,
+        ColonEqualsToken,
+        ColonToken,
         AmpersandAmpersandToken,
         PipePipeToken,
         EqualsToken,
@@ -24,9 +26,11 @@ namespace Blaise.CodeAnalysis.Syntax
         FalseKeyword,
         // Expressions
         LiteralExpression,
+        NameExpression,
         UnaryExpression,
         BinaryExpression,
         ParentheticalExpression,
+        AssignmentExpression,
     }
 
 }

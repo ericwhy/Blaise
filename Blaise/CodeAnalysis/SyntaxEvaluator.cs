@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Blaise.CodeAnalysis.Binding;
 
 namespace Blaise.CodeAnalysis
@@ -7,10 +8,12 @@ namespace Blaise.CodeAnalysis
     internal sealed class SyntaxEvaluator
     {
         private readonly BoundExpression _root;
+        private readonly Dictionary<string, object> _variableTable;
 
-        public SyntaxEvaluator(BoundExpression root)
+        public SyntaxEvaluator(BoundExpression root, Dictionary<string, object> variableTable)
         {
             _root = root;
+            _variableTable = variableTable;
         }
 
         public object Evaluate()
@@ -23,6 +26,16 @@ namespace Blaise.CodeAnalysis
             if (expression is BoundLiteralExpression literalExpression)
             {
                 return literalExpression.BoundValue;
+            }
+            if (expression is BoundVariableExpression variableExpression)
+            {
+                return _variableTable[variableExpression.VariableName];
+            }
+            if (expression is BoundAssignmentExpression assignmentExpression)
+            {
+                var value = EvaluateExpression(assignmentExpression.BoundExpression);
+                _variableTable[assignmentExpression.IdentifierName] = value;
+                return value;
             }
             if (expression is BoundUnaryExpression unaryExpression)
             {
