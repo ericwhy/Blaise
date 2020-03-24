@@ -11,7 +11,7 @@ namespace Blaise
     {
         private static void Main()
         {
-            var variableTable = new Dictionary<string, object>();
+            var variableTable = new Dictionary<SymbolEntry, object>();
             bool showTree = false;
             while (true)
             {

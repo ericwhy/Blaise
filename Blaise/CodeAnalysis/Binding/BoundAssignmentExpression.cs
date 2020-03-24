@@ -4,9 +4,9 @@ namespace Blaise.CodeAnalysis.Binding
 {
     internal sealed class BoundAssignmentExpression : BoundExpression
     {
-        public BoundAssignmentExpression(string identifierName, BoundExpression boundExpression)
+        public BoundAssignmentExpression(SymbolEntry symbol, BoundExpression boundExpression)
         {
-            IdentifierName = identifierName;
+            Symbol = symbol;
             BoundExpression = boundExpression;
         }
 
@@ -14,7 +14,7 @@ namespace Blaise.CodeAnalysis.Binding
 
         public override BoundNodeKind Kind => BoundNodeKind.AssignmentExpression;
 
-        public string IdentifierName { get; }
+        public SymbolEntry Symbol { get; }
         public BoundExpression BoundExpression { get; }
     }
 }

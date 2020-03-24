@@ -8,9 +8,9 @@ namespace Blaise.CodeAnalysis
     internal sealed class SyntaxEvaluator
     {
         private readonly BoundExpression _root;
-        private readonly Dictionary<string, object> _variableTable;
+        private readonly Dictionary<SymbolEntry, object> _variableTable;
 
-        public SyntaxEvaluator(BoundExpression root, Dictionary<string, object> variableTable)
+        public SyntaxEvaluator(BoundExpression root, Dictionary<SymbolEntry, object> variableTable)
         {
             _root = root;
             _variableTable = variableTable;
@@ -29,12 +29,12 @@ namespace Blaise.CodeAnalysis
             }
             if (expression is BoundVariableExpression variableExpression)
             {
-                return _variableTable[variableExpression.VariableName];
+                return _variableTable[variableExpression.Symbol];
             }
             if (expression is BoundAssignmentExpression assignmentExpression)
             {
                 var value = EvaluateExpression(assignmentExpression.BoundExpression);
-                _variableTable[assignmentExpression.IdentifierName] = value;
+                _variableTable[assignmentExpression.Symbol] = value;
                 return value;
             }
             if (expression is BoundUnaryExpression unaryExpression)

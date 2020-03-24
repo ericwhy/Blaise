@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Blaise.CodeAnalysis.Syntax;
 
 namespace Blaise.CodeAnalysis.Binding
 {
     internal sealed partial class ExpressionBinder
     {
-        private readonly Dictionary<string, object> _variableTable;
+        private readonly Dictionary<SymbolEntry, object> _variableTable;
         private readonly DiagnosticBag _messages = new DiagnosticBag();
 
-        public ExpressionBinder(Dictionary<string, object> variableTable)
+        public ExpressionBinder(Dictionary<SymbolEntry, object> variableTable)
         {
             _variableTable = variableTable;
         }
@@ -47,25 +48,26 @@ namespace Blaise.CodeAnalysis.Binding
         private BoundExpression BindNameExpression(NameExpressionElement expression)
         {
             var name = expression.IdentifierToken.Text;
-            if (!_variableTable.TryGetValue(name, out var value))
+            var symbol = _variableTable.Keys.FirstOrDefault(s => s.SymbolName == name);
+            if (symbol == null)
             {
                 _messages.ReportUndefinedName(expression.IdentifierToken.TextSpan, name);
                 return new BoundLiteralExpression(0);
             }
-            var variableType = value.GetType();
-            return new BoundVariableExpression(name, variableType);
+            return new BoundVariableExpression(symbol);
         }
         private BoundExpression BindAssignmentExpression(AssignmentExpressionElement expression)
         {
             var identifierName = expression.IdentifierToken.Text;
             var boundExpression = BindExpression(expression.Expression);
-            var value = boundExpression.BoundType == typeof(int)
-                ? (object)0
-                : boundExpression.BoundType == typeof(bool)
-                    ? (object)false
-                    : null;
-            _variableTable[identifierName] = value;
-            return new BoundAssignmentExpression(identifierName, boundExpression);
+            var currentSymbol = _variableTable.Keys.FirstOrDefault(s => s.SymbolName == identifierName);
+            if (currentSymbol != null)
+                _variableTable.Remove(currentSymbol);
+
+            var symbol = new SymbolEntry(identifierName, boundExpression.BoundType);
+            _variableTable[symbol] = null;
+
+            return new BoundAssignmentExpression(symbol, boundExpression);
         }
         private BoundExpression BindUnaryExpression(UnaryExpressionElement expression)
         {

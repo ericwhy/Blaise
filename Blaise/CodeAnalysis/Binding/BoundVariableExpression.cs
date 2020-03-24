@@ -4,15 +4,14 @@ namespace Blaise.CodeAnalysis.Binding
 {
     internal sealed class BoundVariableExpression : BoundExpression
     {
-        public BoundVariableExpression(string variableName, Type boundType)
+        public BoundVariableExpression(SymbolEntry symbol)
         {
-            VariableName = variableName;
-            BoundType = boundType;
+            Symbol = symbol;
         }
 
-        public string VariableName { get; }
+        public SymbolEntry Symbol { get; }
 
-        public override Type BoundType { get; }
+        public override Type BoundType => Symbol.SymbolType;
 
         public override BoundNodeKind Kind => BoundNodeKind.VariableExpression;
     }

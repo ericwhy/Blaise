@@ -15,7 +15,7 @@ namespace Blaise.CodeAnalysis
 
         public SyntaxTree Syntax { get; }
 
-        public EvaluationResult Evaluate(Dictionary<string, object> variableTable)
+        public EvaluationResult Evaluate(Dictionary<SymbolEntry, object> variableTable)
         {
             var binder = new ExpressionBinder(variableTable);
             var boundExpression = binder.BindExpression(Syntax.Root);
