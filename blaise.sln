@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blaise-cc", "blaise-cc\blaise-cc.csproj", "{04D77D31-422E-4DFB-9407-96EA6688FC33}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blaise", "Blaise\Blaise.csproj", "{916A9D79-7EB9-4E2E-86C2-D6055A401B4F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,17 @@ Global
 		{04D77D31-422E-4DFB-9407-96EA6688FC33}.Release|x64.Build.0 = Release|Any CPU
 		{04D77D31-422E-4DFB-9407-96EA6688FC33}.Release|x86.ActiveCfg = Release|Any CPU
 		{04D77D31-422E-4DFB-9407-96EA6688FC33}.Release|x86.Build.0 = Release|Any CPU
+		{916A9D79-7EB9-4E2E-86C2-D6055A401B4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{916A9D79-7EB9-4E2E-86C2-D6055A401B4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{916A9D79-7EB9-4E2E-86C2-D6055A401B4F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{916A9D79-7EB9-4E2E-86C2-D6055A401B4F}.Debug|x64.Build.0 = Debug|Any CPU
+		{916A9D79-7EB9-4E2E-86C2-D6055A401B4F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{916A9D79-7EB9-4E2E-86C2-D6055A401B4F}.Debug|x86.Build.0 = Debug|Any CPU
+		{916A9D79-7EB9-4E2E-86C2-D6055A401B4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{916A9D79-7EB9-4E2E-86C2-D6055A401B4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{916A9D79-7EB9-4E2E-86C2-D6055A401B4F}.Release|x64.ActiveCfg = Release|Any CPU
+		{916A9D79-7EB9-4E2E-86C2-D6055A401B4F}.Release|x64.Build.0 = Release|Any CPU
+		{916A9D79-7EB9-4E2E-86C2-D6055A401B4F}.Release|x86.ActiveCfg = Release|Any CPU
+		{916A9D79-7EB9-4E2E-86C2-D6055A401B4F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
