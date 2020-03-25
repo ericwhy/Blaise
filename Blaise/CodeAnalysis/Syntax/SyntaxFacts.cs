@@ -11,6 +11,7 @@ namespace Blaise.CodeAnalysis.Syntax
                 case SyntaxKind.PlusToken:
                 case SyntaxKind.MinusToken:
                 case SyntaxKind.BangToken:
+                case SyntaxKind.LiteralNotToken:
                     return 6;
                 default:
                     return 0;
@@ -30,21 +31,29 @@ namespace Blaise.CodeAnalysis.Syntax
                 case SyntaxKind.LtGtToken:
                     return 3;
                 case SyntaxKind.AmpersandAmpersandToken:
+                case SyntaxKind.LiteralAndToken:
                     return 2;
                 case SyntaxKind.PipePipeToken:
+                case SyntaxKind.LiteralOrToken:
                     return 1;
                 default:
                     return 0;
             }
         }
 
-        public static SyntaxKind GetKeywordKind(string token)
+        public static SyntaxKind GetLiteralKind(string token)
         {
-            switch (token)
+            switch (token.ToLower())
             {
-                case "True":
+                case "and":
+                    return SyntaxKind.LiteralAndToken;
+                case "or":
+                    return SyntaxKind.LiteralOrToken;
+                case "not":
+                    return SyntaxKind.LiteralNotToken;
+                case "true":
                     return SyntaxKind.TrueKeyword;
-                case "False":
+                case "false":
                     return SyntaxKind.FalseKeyword;
                 default:
                     return SyntaxKind.IdentifierToken;

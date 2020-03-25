@@ -20,6 +20,9 @@ namespace Blaise.CodeAnalysis.Syntax
         LtGtToken,
         OpenParensToken,
         CloseParensToken,
+        LiteralAndToken,
+        LiteralOrToken,
+        LiteralNotToken,
         IdentifierToken,
         // Keywords
         TrueKeyword,

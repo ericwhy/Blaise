@@ -90,7 +90,7 @@ namespace Blaise.CodeAnalysis.Syntax
                     MoveNext();
                 }
                 var token = GetTextFragment();
-                var kind = SyntaxFacts.GetKeywordKind(token);
+                var kind = SyntaxFacts.GetLiteralKind(token);
                 return new SyntaxToken(kind, startsAt, token, null);
             }
 

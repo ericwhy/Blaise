@@ -61,12 +61,12 @@ namespace Blaise.CodeAnalysis.Binding
             var identifierName = expression.IdentifierToken.Text;
             var boundExpression = BindExpression(expression.Expression);
             var currentSymbol = _variableTable.Keys.FirstOrDefault(s => s.SymbolName == identifierName);
-            if (currentSymbol != null)
-                _variableTable.Remove(currentSymbol);
-
             var symbol = new SymbolEntry(identifierName, boundExpression.BoundType);
-            _variableTable[symbol] = null;
-
+            if (currentSymbol != null && currentSymbol.SymbolType != symbol.SymbolType)
+            {
+                _variableTable.Remove(currentSymbol);
+                _variableTable[symbol] = null;
+            }
             return new BoundAssignmentExpression(symbol, boundExpression);
         }
         private BoundExpression BindUnaryExpression(UnaryExpressionElement expression)
@@ -109,6 +109,7 @@ namespace Blaise.CodeAnalysis.Binding
                 switch (kind)
                 {
                     case SyntaxKind.BangToken:
+                    case SyntaxKind.LiteralNotToken:
                         return BoundUnaryOperatorKind.LogicalNegation;
                 }
             }
@@ -135,8 +136,10 @@ namespace Blaise.CodeAnalysis.Binding
                 switch (kind)
                 {
                     case SyntaxKind.AmpersandAmpersandToken:
+                    case SyntaxKind.LiteralAndToken:
                         return BoundBinaryOperatorKind.LogicalAnd;
                     case SyntaxKind.PipePipeToken:
+                    case SyntaxKind.LiteralOrToken:
                         return BoundBinaryOperatorKind.LogicalOr;
                 }
             }

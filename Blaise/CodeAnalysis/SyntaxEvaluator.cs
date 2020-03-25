@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Blaise.CodeAnalysis.Binding;
 
 namespace Blaise.CodeAnalysis
@@ -29,7 +30,8 @@ namespace Blaise.CodeAnalysis
             }
             if (expression is BoundVariableExpression variableExpression)
             {
-                return _variableTable[variableExpression.Symbol];
+                var symbolMatch = _variableTable.Keys.First(s => s.SymbolName == variableExpression.Symbol.SymbolName);
+                return _variableTable[symbolMatch];
             }
             if (expression is BoundAssignmentExpression assignmentExpression)
             {

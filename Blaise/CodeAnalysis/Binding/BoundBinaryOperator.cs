@@ -41,7 +41,9 @@ namespace Blaise.CodeAnalysis.Binding
             new BoundBinaryOperator(SyntaxKind.EqualsToken, BoundBinaryOperatorKind.Equals, typeof(bool)),
             new BoundBinaryOperator(SyntaxKind.LtGtToken, BoundBinaryOperatorKind.NotEquals, typeof(bool)),
             new BoundBinaryOperator(SyntaxKind.AmpersandAmpersandToken, BoundBinaryOperatorKind.LogicalAnd, typeof(bool)),
+            new BoundBinaryOperator(SyntaxKind.LiteralAndToken, BoundBinaryOperatorKind.LogicalAnd, typeof(bool)),
             new BoundBinaryOperator(SyntaxKind.PipePipeToken, BoundBinaryOperatorKind.LogicalOr, typeof(bool)),
+            new BoundBinaryOperator(SyntaxKind.LiteralOrToken, BoundBinaryOperatorKind.LogicalOr, typeof(bool)),
         };
 
         public static BoundBinaryOperator BindBinaryOperator(SyntaxKind syntaxKind, Type leftOperandType, Type rightOperandType)

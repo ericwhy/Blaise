@@ -55,6 +55,22 @@ namespace Blaise.CodeAnalysis.Syntax
             return new SyntaxToken(kind, Current.Position, string.Empty, null);
         }
 
+        private ExpressionElement ParseExpressionElement()
+        {
+            return ParseAssignmentExpressionElement();
+        }
+        private ExpressionElement ParseAssignmentExpressionElement()
+        {
+            if (Current.Kind == SyntaxKind.IdentifierToken &&
+                LookAhead.Kind == SyntaxKind.ColonEqualsToken)
+            {
+                var identifierToken = NextToken();
+                var operatorToken = NextToken();
+                var rightExpression = ParseBinaryExpressionElement();
+                return new AssignmentExpressionElement(identifierToken, operatorToken, rightExpression);
+            }
+            return ParseBinaryExpressionElement();
+        }
         private ExpressionElement ParsePrimaryExpression()
         {
             switch (Current.Kind)
@@ -62,7 +78,7 @@ namespace Blaise.CodeAnalysis.Syntax
                 case SyntaxKind.OpenParensToken:
                     {
                         var openParens = NextToken();
-                        var expression = ParseBinaryExpressionElement();
+                        var expression = ParseExpressionElement();
                         var closeParens = MatchTokenKind(SyntaxKind.CloseParensToken);
                         return new ParentheticalExpressionElement(openParens, expression, closeParens);
                     }
@@ -85,22 +101,6 @@ namespace Blaise.CodeAnalysis.Syntax
                         return new LiteralExpressionElement(primaryToken);
                     }
             }
-        }
-        private ExpressionElement ParseExpressionElement()
-        {
-            return ParseAssignmentExpressionElement();
-        }
-        private ExpressionElement ParseAssignmentExpressionElement()
-        {
-            if (Current.Kind == SyntaxKind.IdentifierToken &&
-                LookAhead.Kind == SyntaxKind.ColonEqualsToken)
-            {
-                var identifierToken = NextToken();
-                var operatorToken = NextToken();
-                var rightExpression = ParseAssignmentExpressionElement();
-                return new AssignmentExpressionElement(identifierToken, operatorToken, rightExpression);
-            }
-            return ParseBinaryExpressionElement();
         }
         private ExpressionElement ParseBinaryExpressionElement(int parentPrecedence = 0)
         {

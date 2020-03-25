@@ -7,7 +7,7 @@ namespace Blaise.CodeAnalysis.Binding
     internal sealed class BoundUnaryOperator
     {
         private BoundUnaryOperator(SyntaxKind syntaxKind, BoundUnaryOperatorKind operatorKind, Type operatorType)
-            :this(syntaxKind, operatorKind, operatorType, operatorType) 
+            : this(syntaxKind, operatorKind, operatorType, operatorType)
         {
 
         }
@@ -25,9 +25,10 @@ namespace Blaise.CodeAnalysis.Binding
         public Type ResultType { get; }
         private static BoundUnaryOperator[] _operators =
         {
-            new BoundUnaryOperator(SyntaxKind.BangToken, BoundUnaryOperatorKind.LogicalNegation, typeof(bool)),
+            new BoundUnaryOperator(SyntaxKind.MinusToken, BoundUnaryOperatorKind.ArithmeticNegation, typeof(int)),
             new BoundUnaryOperator(SyntaxKind.PlusToken, BoundUnaryOperatorKind.ArithmeticIdentity, typeof(int)),
-            new BoundUnaryOperator(SyntaxKind.BangToken, BoundUnaryOperatorKind.LogicalNegation, typeof(int)),
+            new BoundUnaryOperator(SyntaxKind.BangToken, BoundUnaryOperatorKind.LogicalNegation, typeof(bool)),
+            new BoundUnaryOperator(SyntaxKind.LiteralNotToken, BoundUnaryOperatorKind.LogicalNegation, typeof(bool)),
         };
 
         public static BoundUnaryOperator BindUnaryOperator(SyntaxKind syntaxKind, Type operandType)
