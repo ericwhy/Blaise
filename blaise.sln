@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blaise-cc", "blaise-cc\blai
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blaise", "Blaise\Blaise.csproj", "{916A9D79-7EB9-4E2E-86C2-D6055A401B4F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blaise.Tests", "Blaise.Tests\Blaise.Tests.csproj", "{219AF7E6-B33B-45E1-8EE6-CDF08157A90D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,5 +46,17 @@ Global
 		{916A9D79-7EB9-4E2E-86C2-D6055A401B4F}.Release|x64.Build.0 = Release|Any CPU
 		{916A9D79-7EB9-4E2E-86C2-D6055A401B4F}.Release|x86.ActiveCfg = Release|Any CPU
 		{916A9D79-7EB9-4E2E-86C2-D6055A401B4F}.Release|x86.Build.0 = Release|Any CPU
+		{219AF7E6-B33B-45E1-8EE6-CDF08157A90D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{219AF7E6-B33B-45E1-8EE6-CDF08157A90D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{219AF7E6-B33B-45E1-8EE6-CDF08157A90D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{219AF7E6-B33B-45E1-8EE6-CDF08157A90D}.Debug|x64.Build.0 = Debug|Any CPU
+		{219AF7E6-B33B-45E1-8EE6-CDF08157A90D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{219AF7E6-B33B-45E1-8EE6-CDF08157A90D}.Debug|x86.Build.0 = Debug|Any CPU
+		{219AF7E6-B33B-45E1-8EE6-CDF08157A90D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{219AF7E6-B33B-45E1-8EE6-CDF08157A90D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{219AF7E6-B33B-45E1-8EE6-CDF08157A90D}.Release|x64.ActiveCfg = Release|Any CPU
+		{219AF7E6-B33B-45E1-8EE6-CDF08157A90D}.Release|x64.Build.0 = Release|Any CPU
+		{219AF7E6-B33B-45E1-8EE6-CDF08157A90D}.Release|x86.ActiveCfg = Release|Any CPU
+		{219AF7E6-B33B-45E1-8EE6-CDF08157A90D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
