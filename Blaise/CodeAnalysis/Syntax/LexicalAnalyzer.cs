@@ -109,7 +109,10 @@ namespace Blaise.CodeAnalysis.Syntax
                 case ')':
                     return new SyntaxToken(SyntaxKind.CloseParensToken, MoveNext(), ")", null);
                 case '!':
-                    return new SyntaxToken(SyntaxKind.BangToken, MoveNext(), "!", null);
+                    if (Lookahead == '=')
+                        return new SyntaxToken(SyntaxKind.BangEqualsToken, MoveNext(2), "!=", null);
+                    else
+                        return new SyntaxToken(SyntaxKind.BangToken, MoveNext(), "!", null);
                 case '=':
                     return new SyntaxToken(SyntaxKind.EqualsToken, MoveNext(), "=", null);
                 case ':':

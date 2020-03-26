@@ -29,6 +29,7 @@ namespace Blaise.CodeAnalysis.Syntax
                     return 4;
                 case SyntaxKind.EqualsToken:
                 case SyntaxKind.LtGtToken:
+                case SyntaxKind.BangEqualsToken:
                     return 3;
                 case SyntaxKind.AmpersandAmpersandToken:
                 case SyntaxKind.LiteralAndToken:

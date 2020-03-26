@@ -18,6 +18,7 @@ namespace Blaise.CodeAnalysis.Syntax
         PipePipeToken,
         EqualsToken,
         LtGtToken,
+        BangEqualsToken,
         OpenParensToken,
         CloseParensToken,
         LiteralAndToken,
