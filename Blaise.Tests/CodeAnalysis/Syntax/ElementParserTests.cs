@@ -28,15 +28,15 @@ namespace Blaise.Tests.CodeAnalysis.Syntax
                 using (var enumerator = new AssertingEnumerator(expression))
                 {
                     enumerator.AssertElement(SyntaxKind.BinaryExpression); // op2
-                    enumerator.AssertElement(SyntaxKind.NameExpression); // Name: c
-                    enumerator.AssertToken(SyntaxKind.IdentifierToken, "c");
-                    enumerator.AssertToken(secondOperatorKind, secondOperatorKindText); // op2 text
                     enumerator.AssertElement(SyntaxKind.BinaryExpression); // op1
-                    enumerator.AssertElement(SyntaxKind.NameExpression); // Name: b
-                    enumerator.AssertToken(SyntaxKind.IdentifierToken, "b"); // 'b'
-                    enumerator.AssertToken(firstOperatorKind, firstOperatorKindText); // op1 text
                     enumerator.AssertElement(SyntaxKind.NameExpression); // Name: a
                     enumerator.AssertToken(SyntaxKind.IdentifierToken, "a"); // 'a'
+                    enumerator.AssertToken(firstOperatorKind, firstOperatorKindText); // op1 text
+                    enumerator.AssertElement(SyntaxKind.NameExpression); // Name: b
+                    enumerator.AssertToken(SyntaxKind.IdentifierToken, "b"); // 'b'
+                    enumerator.AssertToken(secondOperatorKind, secondOperatorKindText); // op2 text
+                    enumerator.AssertElement(SyntaxKind.NameExpression); // Name: c
+                    enumerator.AssertToken(SyntaxKind.IdentifierToken, "c");
                 }
             }
             else
@@ -49,15 +49,15 @@ namespace Blaise.Tests.CodeAnalysis.Syntax
                 using (var enumerator = new AssertingEnumerator(expression))
                 {
                     enumerator.AssertElement(SyntaxKind.BinaryExpression); // op1
-                    enumerator.AssertElement(SyntaxKind.BinaryExpression); // op2
-                    enumerator.AssertElement(SyntaxKind.NameExpression); // Name: c
-                    enumerator.AssertToken(SyntaxKind.IdentifierToken, "c"); // 'c'
-                    enumerator.AssertToken(secondOperatorKind, secondOperatorKindText); // op2 text
-                    enumerator.AssertElement(SyntaxKind.NameExpression); // Name: b
-                    enumerator.AssertToken(SyntaxKind.IdentifierToken, "b"); // 'b'
-                    enumerator.AssertToken(firstOperatorKind, firstOperatorKindText); // op1 text
                     enumerator.AssertElement(SyntaxKind.NameExpression); // Name: a
                     enumerator.AssertToken(SyntaxKind.IdentifierToken, "a");
+                    enumerator.AssertToken(firstOperatorKind, firstOperatorKindText); // op1 text
+                    enumerator.AssertElement(SyntaxKind.BinaryExpression); // op2
+                    enumerator.AssertElement(SyntaxKind.NameExpression); // Name: b
+                    enumerator.AssertToken(SyntaxKind.IdentifierToken, "b"); // 'b'
+                    enumerator.AssertToken(secondOperatorKind, secondOperatorKindText); // op2 text
+                    enumerator.AssertElement(SyntaxKind.NameExpression); // Name: c
+                    enumerator.AssertToken(SyntaxKind.IdentifierToken, "c"); // 'c'
                 }
             }
 

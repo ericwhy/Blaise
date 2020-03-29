@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Blaise.CodeAnalysis.Syntax;
 using Xunit;
 using System;
+using System.Linq;
 
 namespace Blaise.Tests.CodeAnalysis.Syntax
 {
@@ -46,7 +47,7 @@ namespace Blaise.Tests.CodeAnalysis.Syntax
             {
                 var topElement = stack.Pop();
                 yield return topElement;
-                foreach (var childElement in topElement.GetChildElements())
+                foreach (var childElement in topElement.GetChildElements().Reverse())
                 {
                     stack.Push(childElement);
                 }
