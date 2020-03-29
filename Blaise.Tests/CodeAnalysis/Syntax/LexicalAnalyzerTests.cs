@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Blaise.Tests.CodeAnalysis.Syntax
 {
-    public class LexicalAnalyzerTest
+    public class LexicalAnalyzerTests
     {
         [Theory]
         [MemberData(nameof(TokensData))]

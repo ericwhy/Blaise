@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Blaise.CodeAnalysis.Syntax
 {
-    internal static class SyntaxFacts
+    public static class SyntaxFacts
     {
         public static int GetUnaryOperatorPrecedence(this SyntaxKind kind)
         {
@@ -58,6 +60,68 @@ namespace Blaise.CodeAnalysis.Syntax
                     return SyntaxKind.FalseKeyword;
                 default:
                     return SyntaxKind.IdentifierToken;
+            }
+        }
+        public static IEnumerable<SyntaxKind> UnaryOperatorKinds
+        {
+            get
+            {
+                var syntaxKinds = (SyntaxKind[])Enum.GetValues(typeof(SyntaxKind));
+                return from syntaxKind in syntaxKinds
+                       where GetUnaryOperatorPrecedence(syntaxKind) > 0
+                       select syntaxKind;
+            }
+        }
+        public static IEnumerable<SyntaxKind> BinaryOperatorKinds
+        {
+            get
+            {
+                var syntaxKinds = (SyntaxKind[])Enum.GetValues(typeof(SyntaxKind));
+                return from syntaxKind in syntaxKinds
+                       where GetBinaryOperatorPrecedence(syntaxKind) > 0
+                       select syntaxKind;
+            }
+        }
+        public static string GetSyntaxText(SyntaxKind kind)
+        {
+            switch (kind)
+            {
+                case SyntaxKind.PlusToken:
+                    return "+";
+                case SyntaxKind.MinusToken:
+                    return "-";
+                case SyntaxKind.SplatToken:
+                    return "*";
+                case SyntaxKind.SlashToken:
+                    return "/";
+                case SyntaxKind.BangToken:
+                    return "!";
+                case SyntaxKind.ColonEqualsToken:
+                    return ":=";
+                case SyntaxKind.ColonToken:
+                    return ":";
+                case SyntaxKind.AmpersandAmpersandToken:
+                    return "&&";
+                case SyntaxKind.PipePipeToken:
+                    return "||";
+                case SyntaxKind.EqualsToken:
+                    return "=";
+                case SyntaxKind.LtGtToken:
+                    return "<>";
+                case SyntaxKind.BangEqualsToken:
+                    return "!=";
+                case SyntaxKind.OpenParensToken:
+                    return "(";
+                case SyntaxKind.CloseParensToken:
+                    return ")";
+                case SyntaxKind.LiteralAndToken:
+                    return "and";
+                case SyntaxKind.LiteralOrToken:
+                    return "or";
+                case SyntaxKind.LiteralNotToken:
+                    return "not";
+                default:
+                    return null;
             }
         }
     }
