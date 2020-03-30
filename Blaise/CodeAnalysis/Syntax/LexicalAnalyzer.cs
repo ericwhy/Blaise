@@ -7,6 +7,9 @@ namespace Blaise.CodeAnalysis.Syntax
         private readonly string _scanText;
         private int _scanPosition;
         private int _startToken;
+        private string _currentToken;
+        private SyntaxKind CurrentKind { get; set; }
+        private object CurrentValue { get; set; }
         private DiagnosticBag _messages = new DiagnosticBag();
 
         public LexicalAnalyzer(string scanText)
@@ -39,106 +42,160 @@ namespace Blaise.CodeAnalysis.Syntax
         private int StartTextFragment()
         {
             _startToken = _scanPosition;
+            _currentToken = string.Empty;
             return _startToken;
         }
         private string GetTextFragment()
         {
-            return _scanText.Substring(_startToken, _scanPosition - _startToken);
+            if (string.IsNullOrEmpty(_currentToken))
+            {
+                _currentToken = _scanText.Substring(_startToken, _scanPosition - _startToken);
+            }
+            return _currentToken;
         }
         private bool IsEndOfFile => _scanPosition >= _scanText.Length;
         public SyntaxToken NextToken()
         {
-            // Literals:
-            //    Numbers
-            //  Operators
-            //     + - * / ( )
-            //  Other
-            //    <whitespace>
-            //    <endoffile>
-            int test = 0;
-            if (char.IsDigit(Current))
-            {
-                var startsAt = StartTextFragment();
-                while (char.IsDigit(Current))
-                {
-                    test = MoveNext();
-                }
-                var token = GetTextFragment();
-                if (!int.TryParse(token, out var tokenValue))
-                {
-                    Messages.ReportInvalidInteger(new TextSpan(startsAt, token.Length), token, typeof(int));
-                }
-                return new SyntaxToken(SyntaxKind.IntegerToken, startsAt, token, tokenValue);
-            }
-            if (char.IsWhiteSpace(Current))
-            {
-                var startsAt = StartTextFragment();
-                while (char.IsWhiteSpace(Current))
-                {
-                    MoveNext();
-                }
-                var token = GetTextFragment();
-                return new SyntaxToken(SyntaxKind.WhitespaceToken, startsAt, token, null);
-            }
-            if (char.IsLetter(Current))
-            {
-                var startsAt = StartTextFragment();
-                while (char.IsLetter(Current))
-                {
-                    MoveNext();
-                }
-                var token = GetTextFragment();
-                var kind = SyntaxFacts.GetLiteralKind(token);
-                return new SyntaxToken(kind, startsAt, token, null);
-            }
-
+            var startPosition = StartTextFragment();
+            CurrentKind = SyntaxKind.BadToken;
+            CurrentValue = null;
             switch (Current)
             {
                 case '\0':
-                    return new SyntaxToken(SyntaxKind.EndOfFileToken, MoveNext(), "\0", null);
+                    CurrentKind = SyntaxKind.EndOfFileToken;
+                    _ = MoveNext();
+                    break;
                 case '+':
-                    return new SyntaxToken(SyntaxKind.PlusToken, MoveNext(), "+", null);
+                    CurrentKind = SyntaxKind.PlusToken;
+                    _ = MoveNext();
+                    break;
                 case '-':
-                    return new SyntaxToken(SyntaxKind.MinusToken, MoveNext(), "-", null);
+                    CurrentKind = SyntaxKind.MinusToken;
+                    _ = MoveNext();
+                    break;
                 case '*':
-                    return new SyntaxToken(SyntaxKind.SplatToken, MoveNext(), "*", null);
+                    CurrentKind = SyntaxKind.SplatToken;
+                    _ = MoveNext();
+                    break;
                 case '/':
-                    return new SyntaxToken(SyntaxKind.SlashToken, MoveNext(), "/", null);
+                    CurrentKind = SyntaxKind.SlashToken;
+                    _ = MoveNext();
+                    break;
                 case '(':
-                    return new SyntaxToken(SyntaxKind.OpenParensToken, MoveNext(), "(", null);
+                    CurrentKind = SyntaxKind.OpenParensToken;
+                    _ = MoveNext();
+                    break;
                 case ')':
-                    return new SyntaxToken(SyntaxKind.CloseParensToken, MoveNext(), ")", null);
+                    CurrentKind = SyntaxKind.CloseParensToken;
+                    _ = MoveNext();
+                    break;
                 case '!':
-                    if (Lookahead == '=')
-                        return new SyntaxToken(SyntaxKind.BangEqualsToken, MoveNext(2), "!=", null);
+                    _ = MoveNext();
+                    if (Current != '=')
+                    {
+                        CurrentKind = SyntaxKind.BangToken;
+                    }
                     else
-                        return new SyntaxToken(SyntaxKind.BangToken, MoveNext(), "!", null);
+                    {
+                        CurrentKind = SyntaxKind.BangEqualsToken;
+                        _ = MoveNext();
+                    }
+                    break;
                 case '=':
-                    return new SyntaxToken(SyntaxKind.EqualsToken, MoveNext(), "=", null);
+                    CurrentKind = SyntaxKind.EqualsToken;
+                    _ = MoveNext();
+                    break;
                 case ':':
-                    if (Lookahead == '=')
-                        return new SyntaxToken(SyntaxKind.ColonEqualsToken, MoveNext(2), ":=", null);
+                    _ = MoveNext();
+                    if (Current != '=')
+                    {
+                        CurrentKind = SyntaxKind.ColonToken;
+                    }
                     else
-                        return new SyntaxToken(SyntaxKind.ColonToken, MoveNext(), ":", null);
+                    {
+                        CurrentKind = SyntaxKind.ColonEqualsToken;
+                        _ = MoveNext();
+                    }
+                    break;
                 case '&':
-                    if (Lookahead == '&')
-                        return new SyntaxToken(SyntaxKind.AmpersandAmpersandToken, MoveNext(2), "&&", null);
+                    _ = MoveNext();
+                    if (Current == '&')
+                    {
+                        CurrentKind = SyntaxKind.AmpersandAmpersandToken;
+                        _ = MoveNext();
+                    }
                     break;
                 case '|':
-                    if (Lookahead == '|')
-                        return new SyntaxToken(SyntaxKind.PipePipeToken, MoveNext(2), "||", null);
+                    _ = MoveNext();
+                    if (Current == '|')
+                    {
+                        CurrentKind = SyntaxKind.PipePipeToken;
+                        _ = MoveNext();
+                    }
                     break;
                 case '<':
-                    if (Lookahead == '>')
-                        return new SyntaxToken(SyntaxKind.LtGtToken, MoveNext(2), "<>", null);
+                    _ = MoveNext();
+                    if (Current == '>')
+                    {
+                        CurrentKind = SyntaxKind.LtGtToken;
+                        _ = MoveNext();
+                    }
+                    break;
+                default:
+                    if (char.IsDigit(Current))
+                    {
+                        ReadInteger(startPosition);
+                    }
+                    else if (char.IsWhiteSpace(Current))
+                    {
+                        ReadWhitespace();
+                    }
+                    else if (char.IsLetter(Current))
+                    {
+                        ReadLiteral();
+                    }
+                    else
+                    {
+                        _ = MoveNext();
+                        string errorCh = GetTextFragment();
+                        Messages.ReportInvalidCharacter(startPosition, errorCh);
+                    }
                     break;
             }
-            // Unexpected token
-            int errorPosition = StartTextFragment();
-            MoveNext();
-            string errorCh = GetTextFragment();
-            Messages.ReportInvalidCharacter(errorPosition, errorCh);
-            return new SyntaxToken(SyntaxKind.BadToken, errorPosition, errorCh, null);
+            return new SyntaxToken(CurrentKind, startPosition, GetTextFragment(), CurrentValue);
+        }
+
+        private void ReadLiteral()
+        {
+            while (char.IsLetter(Current))
+            {
+                _ = MoveNext();
+            }
+            CurrentKind = SyntaxFacts.GetLiteralKind(GetTextFragment());
+        }
+
+        private void ReadWhitespace()
+        {
+            while (char.IsWhiteSpace(Current))
+            {
+                _ = MoveNext();
+            }
+            CurrentKind = SyntaxKind.WhitespaceToken;
+        }
+
+        private void ReadInteger(int startsAt)
+        {
+            while (char.IsDigit(Current))
+            {
+                _ = MoveNext();
+            }
+            var token = GetTextFragment();
+            if (!int.TryParse(token, out var tokenValue))
+            {
+                Messages.ReportInvalidInteger(new TextSpan(startsAt, token.Length), token, typeof(int));
+            }
+            CurrentValue = tokenValue;
+            CurrentKind = SyntaxKind.IntegerToken;
         }
 
         public DiagnosticBag Messages => _messages;
