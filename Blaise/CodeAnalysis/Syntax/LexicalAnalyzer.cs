@@ -31,6 +31,8 @@ namespace Blaise.CodeAnalysis.Syntax
         {
             var currentPosition = _scanPosition;
             _scanPosition += charsToMove;
+            if (_scanPosition > _scanText.Length)
+                _scanPosition = _scanText.Length;
             return currentPosition;
         }
 
@@ -53,10 +55,6 @@ namespace Blaise.CodeAnalysis.Syntax
             //  Other
             //    <whitespace>
             //    <endoffile>
-            if (IsEndOfFile)
-            {
-                return new SyntaxToken(SyntaxKind.EndOfFileToken, -1, string.Empty, null);
-            }
             int test = 0;
             if (char.IsDigit(Current))
             {
@@ -96,6 +94,8 @@ namespace Blaise.CodeAnalysis.Syntax
 
             switch (Current)
             {
+                case '\0':
+                    return new SyntaxToken(SyntaxKind.EndOfFileToken, MoveNext(), "\0", null);
                 case '+':
                     return new SyntaxToken(SyntaxKind.PlusToken, MoveNext(), "+", null);
                 case '-':
