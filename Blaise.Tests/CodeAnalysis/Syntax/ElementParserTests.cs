@@ -60,10 +60,62 @@ namespace Blaise.Tests.CodeAnalysis.Syntax
                     enumerator.AssertToken(SyntaxKind.IdentifierToken, "c"); // 'c'
                 }
             }
+        }
+        [Theory]
+        [MemberData(nameof(UnaryOperatorPairsData))]
+        public void Parser_UnaryExpression_HonorsPrecedences(SyntaxKind unaryOperatorKind, SyntaxKind binaryOperatorKind)
+        {
+            var unaryOperatorKindPrecedence = SyntaxFacts.GetUnaryOperatorPrecedence(unaryOperatorKind);
+            var binaryOperatorKindPrecedence = SyntaxFacts.GetBinaryOperatorPrecedence(binaryOperatorKind);
+            var unaryOperatorKindText = SyntaxFacts.GetSyntaxText(unaryOperatorKind);
+            var binaryOperatorKindText = SyntaxFacts.GetSyntaxText(binaryOperatorKind);
+            var expressionText = $"{unaryOperatorKindText} a {binaryOperatorKindText} b";
+            var expression = SyntaxTree.ParseTree(expressionText).Root;
 
+            if (unaryOperatorKindPrecedence >= binaryOperatorKindPrecedence)
+            {
+                //     bOp
+                //     / \
+                //   uOp  b
+                //    |
+                //    a
+                using (var enumerator = new AssertingEnumerator(expression))
+                {
+                    enumerator.AssertElement(SyntaxKind.BinaryExpression); // op2
+                    enumerator.AssertElement(SyntaxKind.UnaryExpression); // op1
+                    enumerator.AssertToken(unaryOperatorKind, unaryOperatorKindText); // op1 text
+                    enumerator.AssertElement(SyntaxKind.NameExpression); // Name: a
+                    enumerator.AssertToken(SyntaxKind.IdentifierToken, "a"); // 'a'
+                    enumerator.AssertToken(binaryOperatorKind, binaryOperatorKindText); // op2 text
+                    enumerator.AssertElement(SyntaxKind.NameExpression); // Name: b
+                    enumerator.AssertToken(SyntaxKind.IdentifierToken, "b"); // 'b'
+                }
+            }
+            else
+            {
+                //     uOp
+                //      |
+                //    bOp
+                //    / \
+                //   a   b
+                using (var enumerator = new AssertingEnumerator(expression))
+                {
+                    enumerator.AssertElement(SyntaxKind.UnaryExpression); // op1
+                    enumerator.AssertToken(unaryOperatorKind, unaryOperatorKindText); // op1 text
+                    enumerator.AssertElement(SyntaxKind.BinaryExpression); // op2
+                    enumerator.AssertElement(SyntaxKind.NameExpression); // Name: a
+                    enumerator.AssertToken(SyntaxKind.IdentifierToken, "a");
+                    enumerator.AssertToken(binaryOperatorKind, binaryOperatorKindText); // op2 text
+                    enumerator.AssertElement(SyntaxKind.NameExpression); // Name: b
+                    enumerator.AssertToken(SyntaxKind.IdentifierToken, "b"); // 'b'
+                }
+            }
         }
         public static IEnumerable<object[]> BinaryOperatorPairsData => from firstOperatorKind in SyntaxFacts.BinaryOperatorKinds
                                                                        from secondOperatorKind in SyntaxFacts.BinaryOperatorKinds
                                                                        select new object[] { firstOperatorKind, secondOperatorKind };
+        public static IEnumerable<object[]> UnaryOperatorPairsData => from unaryOperatorKind in SyntaxFacts.UnaryOperatorKinds
+                                                                      from binaryOperatorKind in SyntaxFacts.BinaryOperatorKinds
+                                                                      select new object[] { unaryOperatorKind, binaryOperatorKind };
     }
 }
