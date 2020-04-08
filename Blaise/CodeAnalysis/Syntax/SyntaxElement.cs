@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace Blaise.CodeAnalysis.Syntax
@@ -6,6 +7,14 @@ namespace Blaise.CodeAnalysis.Syntax
     public abstract class SyntaxElement
     {
         public abstract SyntaxKind Kind { get; }
+        public virtual TextSpan TextSpan
+        {
+            get
+            {
+                return TextSpan.FromBounds(GetChildElements().First().TextSpan.Start,
+                    GetChildElements().Last().TextSpan.End);
+            }
+        }
         public IEnumerable<SyntaxElement> GetChildElements()
         {
             var instanceProperties = GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
