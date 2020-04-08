@@ -1,6 +1,6 @@
 using System;
 
-namespace Blaise.CodeAnalysis
+namespace Blaise.CodeAnalysis.Text
 {
     public struct TextSpan
     {

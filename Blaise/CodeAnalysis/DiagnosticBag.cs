@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Blaise.CodeAnalysis.Syntax;
+using Blaise.CodeAnalysis.Text;
 
 namespace Blaise.CodeAnalysis
 {

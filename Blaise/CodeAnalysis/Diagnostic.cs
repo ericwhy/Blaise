@@ -1,3 +1,5 @@
+using Blaise.CodeAnalysis.Text;
+
 namespace Blaise.CodeAnalysis
 {
     public sealed class Diagnostic

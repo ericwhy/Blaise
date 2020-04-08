@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Blaise.CodeAnalysis.Text;
 
 namespace Blaise.CodeAnalysis.Syntax
 {
