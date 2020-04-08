@@ -1,11 +1,12 @@
 using System.Collections.Generic;
+using System.Collections.Immutable;
 
 namespace Blaise.CodeAnalysis.Syntax
 {
     internal sealed class ElementParser
     {
         private readonly DiagnosticBag _messages = new DiagnosticBag();
-        private readonly SyntaxToken[] _tokens;
+        private readonly ImmutableArray<SyntaxToken> _tokens;
         private int _tokenPosition;
         public DiagnosticBag Messages => _messages;
         public ElementParser(string text)
@@ -23,7 +24,7 @@ namespace Blaise.CodeAnalysis.Syntax
                 }
             } while (token.Kind != SyntaxKind.EndOfFileToken);
             _messages.AddRange(analyzer.Messages);
-            _tokens = tokens.ToArray();
+            _tokens = tokens.ToImmutableArray();
 
         }
 
@@ -147,7 +148,7 @@ namespace Blaise.CodeAnalysis.Syntax
         {
             var element = ParseExpressionElement();
             var endOfFileToken = MatchTokenKind(SyntaxKind.EndOfFileToken);
-            return new SyntaxTree(element, endOfFileToken, Messages);
+            return new SyntaxTree(element, endOfFileToken, Messages.ToImmutableArray());
         }
     }
 
