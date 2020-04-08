@@ -18,11 +18,6 @@ namespace Blaise.CodeAnalysis.Syntax
         public object Value { get; }
 
         public override SyntaxKind Kind => SyntaxKind.LiteralExpression;
-
-        public override IEnumerable<SyntaxElement> GetChildElements()
-        {
-            yield return LiteralToken;
-        }
     }
 
 }

@@ -14,11 +14,5 @@ namespace Blaise.CodeAnalysis.Syntax
         public ExpressionElement OperandExpression { get; }
 
         public override SyntaxKind Kind => SyntaxKind.UnaryExpression;
-
-        public override IEnumerable<SyntaxElement> GetChildElements()
-        {
-            yield return OperatorElement;
-            yield return OperandExpression;
-        }
     }
 }

@@ -16,12 +16,5 @@ namespace Blaise.CodeAnalysis.Syntax
         public ExpressionElement Expression { get; }
 
         public override SyntaxKind Kind => SyntaxKind.AssignmentExpression;
-
-        public override IEnumerable<SyntaxElement> GetChildElements()
-        {
-            yield return IdentifierToken;
-            yield return EqualsToken;
-            yield return Expression;
-        }
     }
 }

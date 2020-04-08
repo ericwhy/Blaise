@@ -16,12 +16,5 @@ namespace Blaise.CodeAnalysis.Syntax
         public ExpressionElement RightExpression { get; }
 
         public override SyntaxKind Kind => SyntaxKind.BinaryExpression;
-
-        public override IEnumerable<SyntaxElement> GetChildElements()
-        {
-            yield return LeftExpression;
-            yield return OperatorElement;
-            yield return RightExpression;
-        }
     }
 }

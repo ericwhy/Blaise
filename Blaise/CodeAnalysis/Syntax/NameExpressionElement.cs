@@ -12,10 +12,5 @@ namespace Blaise.CodeAnalysis.Syntax
         public SyntaxToken IdentifierToken { get; }
 
         public override SyntaxKind Kind => SyntaxKind.NameExpression;
-
-        public override IEnumerable<SyntaxElement> GetChildElements()
-        {
-            yield return IdentifierToken;
-        }
     }
 }

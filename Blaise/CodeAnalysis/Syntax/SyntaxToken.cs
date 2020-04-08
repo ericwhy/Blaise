@@ -18,11 +18,6 @@ namespace Blaise.CodeAnalysis.Syntax
         public string Text { get; }
         public object Value { get; }
         public TextSpan TextSpan => new TextSpan(Position, Text.Length);
-
-        public override IEnumerable<SyntaxElement> GetChildElements()
-        {
-            return Enumerable.Empty<SyntaxElement>();
-        }
     }
 
 }

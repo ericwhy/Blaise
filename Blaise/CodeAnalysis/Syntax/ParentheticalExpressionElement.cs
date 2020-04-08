@@ -16,13 +16,6 @@ namespace Blaise.CodeAnalysis.Syntax
         public SyntaxElement CloseParensToken { get; }
 
         public override SyntaxKind Kind => SyntaxKind.ParentheticalExpression;
-
-        public override IEnumerable<SyntaxElement> GetChildElements()
-        {
-            yield return OpenParensToken;
-            yield return Expression;
-            yield return CloseParensToken;
-        }
     }
 
 }
