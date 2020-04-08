@@ -45,7 +45,7 @@ namespace Blaise.Tests.CodeAnalysis.Syntax
             Assert.Equal(tokens[2].Kind, secondKind);
             Assert.Equal(tokens[2].Text, secondText);
         }
-        public static IEnumerable<object[]> TokensData => (from t in Tokens
+        public static IEnumerable<object[]> TokensData => (from t in GetTokens()
                                                            select new object[] { t.kind, t.text })
                                                           .Union
                                                           (from t in Separators
@@ -58,9 +58,9 @@ namespace Blaise.Tests.CodeAnalysis.Syntax
             select new object[] { tokenPair.firstKind, tokenPair.firstText, tokenPair.secondKind, tokenPair.secondText, tokenPair.separatorKind, tokenPair.separatorText };
         private static IEnumerable<(SyntaxKind firstKind, string firstText, SyntaxKind secondKind, string secondText)> GetTokenPairs()
         {
-            foreach (var firstToken in Tokens)
+            foreach (var firstToken in GetTokens())
             {
-                foreach (var secondToken in Tokens)
+                foreach (var secondToken in GetTokens())
                 {
                     if (!RequiresSeparator(firstToken.kind, secondToken.kind))
                     {
@@ -74,9 +74,9 @@ namespace Blaise.Tests.CodeAnalysis.Syntax
                                     SyntaxKind separatorKind, string separatorText)>
                                     GetTokenPairsWithSeparators()
         {
-            foreach (var firstToken in Tokens)
+            foreach (var firstToken in GetTokens())
             {
-                foreach (var secondToken in Tokens)
+                foreach (var secondToken in GetTokens())
                 {
                     if (RequiresSeparator(firstToken.kind, secondToken.kind))
                     {
@@ -88,37 +88,28 @@ namespace Blaise.Tests.CodeAnalysis.Syntax
                 }
             }
         }
-        private static IEnumerable<(SyntaxKind kind, string text)> Tokens => new[]
+
+        private static IEnumerable<(SyntaxKind kind, string text)> GetTokens()
         {
-            (SyntaxKind.IntegerToken, "1"),
-            (SyntaxKind.IntegerToken, "12"),
-            (SyntaxKind.IntegerToken, "123"),
+            var fixedTokens = Enum.GetValues(typeof(SyntaxKind))
+                              .Cast<SyntaxKind>()
+                              .Select(k => (kind: k, text: SyntaxFacts.GetSyntaxText(k)))
+                              .Where(t => t.text != null);
 
-            (SyntaxKind.PlusToken, "+"),
-            (SyntaxKind.MinusToken, "-"),
-            (SyntaxKind.SplatToken, "*"),
-            (SyntaxKind.SlashToken, "/"),
-            (SyntaxKind.BangToken, "!"),
-            (SyntaxKind.ColonEqualsToken, ":="),
-            (SyntaxKind.ColonToken, ":"),
-            (SyntaxKind.AmpersandAmpersandToken, "&&"),
-            (SyntaxKind.PipePipeToken, "||"),
-            (SyntaxKind.EqualsToken, "="),
-            (SyntaxKind.LtGtToken, "<>"),
-            (SyntaxKind.BangEqualsToken, "!="),
-            (SyntaxKind.OpenParensToken, "("),
-            (SyntaxKind.CloseParensToken, ")"),
-            (SyntaxKind.LiteralAndToken, "and"),
-            (SyntaxKind.LiteralOrToken, "or"),
-            (SyntaxKind.LiteralNotToken, "not"),
+            var dynamicTokens = new[]
+            {
+                (SyntaxKind.IntegerToken, "1"),
+                (SyntaxKind.IntegerToken, "12"),
+                (SyntaxKind.IntegerToken, "123"),
+                (SyntaxKind.IdentifierToken, "a"),
+                (SyntaxKind.IdentifierToken, "cat"),
+                (SyntaxKind.IdentifierToken, "dog"),
 
-            (SyntaxKind.IdentifierToken, "a"),
-            (SyntaxKind.IdentifierToken, "cat"),
-            (SyntaxKind.IdentifierToken, "dog"),
-
-            (SyntaxKind.TrueKeyword, "true"),
-            (SyntaxKind.FalseKeyword, "false"),
-        };
+                (SyntaxKind.TrueKeyword, "true"),
+                (SyntaxKind.FalseKeyword, "false"),
+            };
+            return fixedTokens.Concat(dynamicTokens);
+        }
         private static IEnumerable<(SyntaxKind kind, string text)> Separators => new[]
         {
             (SyntaxKind.WhitespaceToken, " "),
