@@ -80,10 +80,11 @@ namespace Blaise.CodeAnalysis.Syntax
                 case SyntaxKind.FalseKeyword:
                 case SyntaxKind.TrueKeyword:
                     return ParseBooleanLiteral();
-                case SyntaxKind.IdentifierToken:
-                    return ParseNameExpression();
-                default:
+                case SyntaxKind.IntegerToken:
                     return ParseIntegerLiteral();
+                case SyntaxKind.IdentifierToken:
+                default:
+                    return ParseNameExpression();
             }
         }
 
@@ -95,7 +96,7 @@ namespace Blaise.CodeAnalysis.Syntax
 
         private ExpressionElement ParseParentheticalExpression()
         {
-            var openParens = NextToken();
+            var openParens = MatchTokenKind(SyntaxKind.OpenParensToken);
             var expression = ParseExpressionElement();
             var closeParens = MatchTokenKind(SyntaxKind.CloseParensToken);
             return new ParentheticalExpressionElement(openParens, expression, closeParens);
@@ -103,9 +104,10 @@ namespace Blaise.CodeAnalysis.Syntax
 
         private ExpressionElement ParseBooleanLiteral()
         {
-            var keywordToken = NextToken();
-            var value = keywordToken.Kind == SyntaxKind.TrueKeyword;
-            return new LiteralExpressionElement(keywordToken, value);
+            var isTrue = Current.Kind == SyntaxKind.TrueKeyword;
+            var keywordToken = isTrue ? MatchTokenKind(SyntaxKind.TrueKeyword)
+                : MatchTokenKind(SyntaxKind.FalseKeyword);
+            return new LiteralExpressionElement(keywordToken, isTrue);
         }
 
         private ExpressionElement ParseNameExpression()
