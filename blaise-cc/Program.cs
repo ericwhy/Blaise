@@ -38,7 +38,7 @@ namespace Blaise
                 if (showTree)
                 {
                     Console.ForegroundColor = ConsoleColor.DarkCyan;
-                    PrettyPrint(syntaxTree.Root);
+                    syntaxTree.Root.WriteTo(Console.Out);
                     Console.ResetColor();
                 }
                 if (!messages.Any())
@@ -67,29 +67,6 @@ namespace Blaise
                     }
                     Console.WriteLine();
                 }
-            }
-        }
-        private static void PrettyPrint(SyntaxElement element, string indent = "", bool isLast = true)
-        {
-            // ├──
-            // │  
-            // └──
-            string marker = isLast ? "└──" : "├──";
-
-            Console.Write(indent);
-            Console.Write(marker);
-            Console.Write(element.Kind);
-            if (element is SyntaxToken t && t.Value != null)
-            {
-                Console.Write($" {t.Value}");
-            }
-            Console.WriteLine();
-
-            indent += isLast ? "   " : "│  ";
-            var lastChild = element.GetChildElements().LastOrDefault();
-            foreach (var child in element.GetChildElements())
-            {
-                PrettyPrint(child, indent, child == lastChild);
             }
         }
     }

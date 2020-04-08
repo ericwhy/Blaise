@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -33,6 +34,44 @@ namespace Blaise.CodeAnalysis.Syntax
                         yield return childElement;
                     }
                 }
+            }
+        }
+
+        public void WriteTo(TextWriter writer)
+        {
+            PrettyPrint(writer, this);
+        }
+
+        private static void PrettyPrint(TextWriter writer, SyntaxElement element, string indent = "", bool isLast = true)
+        {
+            // ├──
+            // │  
+            // └──
+            string marker = isLast ? "└──" : "├──";
+
+            writer.Write(indent);
+            writer.Write(marker);
+            writer.Write(element.Kind);
+            if (element is SyntaxToken t && t.Value != null)
+            {
+                writer.Write($" {t.Value}");
+            }
+            writer.WriteLine();
+
+            indent += isLast ? "   " : "│  ";
+            var lastChild = element.GetChildElements().LastOrDefault();
+            foreach (var child in element.GetChildElements())
+            {
+                PrettyPrint(writer, child, indent, child == lastChild);
+            }
+        }
+
+        public override string ToString()
+        {
+            using (var writer = new StringWriter())
+            {
+                PrettyPrint(writer, this);
+                return writer.ToString();
             }
         }
     }
