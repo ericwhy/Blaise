@@ -4,9 +4,9 @@ namespace Blaise.CodeAnalysis.Syntax
 {
     internal sealed class ElementParser
     {
+        private readonly DiagnosticBag _messages = new DiagnosticBag();
         private readonly SyntaxToken[] _tokens;
         private int _tokenPosition;
-        private DiagnosticBag _messages = new DiagnosticBag();
         public DiagnosticBag Messages => _messages;
         public ElementParser(string text)
         {
@@ -76,32 +76,44 @@ namespace Blaise.CodeAnalysis.Syntax
             switch (Current.Kind)
             {
                 case SyntaxKind.OpenParensToken:
-                    {
-                        var openParens = NextToken();
-                        var expression = ParseExpressionElement();
-                        var closeParens = MatchTokenKind(SyntaxKind.CloseParensToken);
-                        return new ParentheticalExpressionElement(openParens, expression, closeParens);
-                    }
-
+                    return ParseParentheticalExpression();
                 case SyntaxKind.FalseKeyword:
                 case SyntaxKind.TrueKeyword:
-                    {
-                        var keywordToken = NextToken();
-                        var value = keywordToken.Kind == SyntaxKind.TrueKeyword;
-                        return new LiteralExpressionElement(keywordToken, value);
-                    }
+                    return ParseBooleanLiteral();
                 case SyntaxKind.IdentifierToken:
-                    {
-                        var identifierToken = NextToken();
-                        return new NameExpressionElement(identifierToken);
-                    }
+                    return ParseNameExpression();
                 default:
-                    {
-                        var primaryToken = MatchTokenKind(SyntaxKind.IntegerToken);
-                        return new LiteralExpressionElement(primaryToken);
-                    }
+                    return ParseIntegerLiteral();
             }
         }
+
+        private ExpressionElement ParseIntegerLiteral()
+        {
+            var primaryToken = MatchTokenKind(SyntaxKind.IntegerToken);
+            return new LiteralExpressionElement(primaryToken);
+        }
+
+        private ExpressionElement ParseParentheticalExpression()
+        {
+            var openParens = NextToken();
+            var expression = ParseExpressionElement();
+            var closeParens = MatchTokenKind(SyntaxKind.CloseParensToken);
+            return new ParentheticalExpressionElement(openParens, expression, closeParens);
+        }
+
+        private ExpressionElement ParseBooleanLiteral()
+        {
+            var keywordToken = NextToken();
+            var value = keywordToken.Kind == SyntaxKind.TrueKeyword;
+            return new LiteralExpressionElement(keywordToken, value);
+        }
+
+        private ExpressionElement ParseNameExpression()
+        {
+            var identifierToken = MatchTokenKind(SyntaxKind.IdentifierToken);
+            return new NameExpressionElement(identifierToken);
+        }
+
         private ExpressionElement ParseBinaryExpressionElement(int parentPrecedence = 0)
         {
             ExpressionElement nextExpression;
