@@ -16,22 +16,22 @@ namespace Blaise.CodeAnalysis.Text
         {
             int lowerIndex = 0;
             int nextIndex = 0;
-            int upperIndex = Lines.Length;
+            int upperIndex = Lines.Length - 1;
             while (lowerIndex <= upperIndex)
             {
                 nextIndex = lowerIndex + (upperIndex - lowerIndex) / 2;
                 var line = Lines[nextIndex];
-                if (line.Start <= position && position <= line.End) // did we find the line that contains position?
+                if (position == line.Start) // did we find the line that contains position?
                 {
                     break;
                 }
                 if (position < line.Start) // Is it in the lower half?
                 {
-                    upperIndex = nextIndex;
+                    upperIndex = nextIndex - 1;
                 }
                 else // it must be in the upper half
                 {
-                    lowerIndex = nextIndex;
+                    lowerIndex = nextIndex + 1;
                 }
             }
             return nextIndex;
@@ -55,7 +55,7 @@ namespace Blaise.CodeAnalysis.Text
                     lineStart = position;
                 }
             }
-            if (position > lineStart)
+            if (position >= lineStart)
             {
                 AddLine(0);
             }
