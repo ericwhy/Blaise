@@ -23,7 +23,7 @@ namespace Blaise.CodeAnalysis.Text
                 var line = Lines[nextIndex];
                 if (position == line.Start) // did we find the line that contains position?
                 {
-                    break;
+                    return nextIndex;
                 }
                 if (position < line.Start) // Is it in the lower half?
                 {
@@ -34,7 +34,7 @@ namespace Blaise.CodeAnalysis.Text
                     lowerIndex = nextIndex + 1;
                 }
             }
-            return nextIndex;
+            return nextIndex - 1;
         }
         private static ImmutableArray<TextLine> ParseLines(SourceText source, string text)
         {
