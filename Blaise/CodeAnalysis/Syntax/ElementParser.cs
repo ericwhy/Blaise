@@ -8,6 +8,7 @@ namespace Blaise.CodeAnalysis.Syntax
     {
         private readonly DiagnosticBag _messages = new DiagnosticBag();
         private readonly ImmutableArray<SyntaxToken> _tokens;
+        private readonly SourceText _source;
         private int _tokenPosition;
         public DiagnosticBag Messages => _messages;
         public ElementParser(SourceText source)
@@ -26,7 +27,7 @@ namespace Blaise.CodeAnalysis.Syntax
             } while (token.Kind != SyntaxKind.EndOfFileToken);
             _messages.AddRange(analyzer.Messages);
             _tokens = tokens.ToImmutableArray();
-
+            _source = source;
         }
 
         private SyntaxToken PeekToken(int offset)
@@ -149,7 +150,7 @@ namespace Blaise.CodeAnalysis.Syntax
         {
             var element = ParseExpressionElement();
             var endOfFileToken = MatchTokenKind(SyntaxKind.EndOfFileToken);
-            return new SyntaxTree(element, endOfFileToken, Messages.ToImmutableArray());
+            return new SyntaxTree(_source, element, endOfFileToken, Messages.ToImmutableArray());
         }
     }
 

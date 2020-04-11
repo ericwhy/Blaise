@@ -49,8 +49,11 @@ namespace Blaise
                 {
                     foreach (var message in messages)
                     {
+                        int lineIndex = syntaxTree.Source.GetLineIndex(message.Span.Start);
+                        int messageStartInLine = message.Span.Start - syntaxTree.Source.Lines[lineIndex].Start + 1;
                         Console.WriteLine();
                         Console.ForegroundColor = ConsoleColor.DarkRed;
+                        Console.Write($"({lineIndex + 1}, {messageStartInLine}): ");
                         Console.WriteLine(message);
                         Console.ResetColor();
 

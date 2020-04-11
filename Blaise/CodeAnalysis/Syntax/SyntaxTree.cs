@@ -7,8 +7,11 @@ namespace Blaise.CodeAnalysis.Syntax
 {
     public sealed class SyntaxTree
     {
-        public SyntaxTree(SyntaxElement root, SyntaxToken endOfFileToken, ImmutableArray<Diagnostic> messages)
+        private readonly SourceText _source;
+
+        public SyntaxTree(SourceText source, SyntaxElement root, SyntaxToken endOfFileToken, ImmutableArray<Diagnostic> messages)
         {
+            _source = source;
             Root = root;
             EndOfFileToken = endOfFileToken;
             Messages = messages;
@@ -17,6 +20,7 @@ namespace Blaise.CodeAnalysis.Syntax
         public SyntaxElement Root { get; }
         public SyntaxToken EndOfFileToken { get; }
         public ImmutableArray<Diagnostic> Messages { get; }
+        public SourceText Source => _source;
 
         public static SyntaxTree ParseTree(string source)
         {
