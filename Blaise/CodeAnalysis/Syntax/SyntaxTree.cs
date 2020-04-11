@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using Blaise.CodeAnalysis.Text;
 
 namespace Blaise.CodeAnalysis.Syntax
 {
@@ -19,14 +20,22 @@ namespace Blaise.CodeAnalysis.Syntax
 
         public static SyntaxTree ParseTree(string source)
         {
+            return ParseTree(SourceText.FromSource(source));
+        }
+        public static SyntaxTree ParseTree(SourceText source)
+        {
             var parser = new ElementParser(source);
             return parser.ParseTree();
         }
 
         // Added for testing support
-        public static IEnumerable<SyntaxToken> ParseTokens(string text)
+        public static IEnumerable<SyntaxToken> ParseTokens(string source)
         {
-            var analyzer = new LexicalAnalyzer(text);
+            return ParseTokens(SourceText.FromSource(source));
+        }
+        public static IEnumerable<SyntaxToken> ParseTokens(SourceText source)
+        {
+            var analyzer = new LexicalAnalyzer(source);
             while (true)
             {
                 var token = analyzer.NextToken();

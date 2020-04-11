@@ -5,7 +5,7 @@ namespace Blaise.CodeAnalysis.Syntax
 {
     internal sealed class LexicalAnalyzer
     {
-        private readonly string _scanText;
+        private readonly SourceText _source;
         private int _scanPosition;
         private int _startToken;
         private string _currentToken;
@@ -13,9 +13,9 @@ namespace Blaise.CodeAnalysis.Syntax
         private object CurrentValue { get; set; }
         private DiagnosticBag _messages = new DiagnosticBag();
 
-        public LexicalAnalyzer(string scanText)
+        public LexicalAnalyzer(SourceText source)
         {
-            _scanText = scanText;
+            _source = source;
         }
 
         private char Current => Peek();
@@ -24,19 +24,19 @@ namespace Blaise.CodeAnalysis.Syntax
         private char Peek(int offset = 0)
         {
             var charOffset = _scanPosition + offset;
-            if (charOffset >= _scanText.Length)
+            if (charOffset >= _source.Length)
             {
                 return '\0';
             }
-            return _scanText[charOffset];
+            return _source[charOffset];
         }
 
         private int MoveNext(int charsToMove = 1)
         {
             var currentPosition = _scanPosition;
             _scanPosition += charsToMove;
-            if (_scanPosition > _scanText.Length)
-                _scanPosition = _scanText.Length;
+            if (_scanPosition > _source.Length)
+                _scanPosition = _source.Length;
             return currentPosition;
         }
 
@@ -50,11 +50,11 @@ namespace Blaise.CodeAnalysis.Syntax
         {
             if (string.IsNullOrEmpty(_currentToken))
             {
-                _currentToken = _scanText.Substring(_startToken, _scanPosition - _startToken);
+                _currentToken = _source.ToString(_startToken, _scanPosition - _startToken);
             }
             return _currentToken;
         }
-        private bool IsEndOfFile => _scanPosition >= _scanText.Length;
+        private bool IsEndOfFile => _scanPosition >= _source.Length;
         public SyntaxToken NextToken()
         {
             var startPosition = StartTextFragment();

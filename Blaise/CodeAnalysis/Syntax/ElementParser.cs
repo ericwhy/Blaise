@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using Blaise.CodeAnalysis.Text;
 
 namespace Blaise.CodeAnalysis.Syntax
 {
@@ -9,10 +10,10 @@ namespace Blaise.CodeAnalysis.Syntax
         private readonly ImmutableArray<SyntaxToken> _tokens;
         private int _tokenPosition;
         public DiagnosticBag Messages => _messages;
-        public ElementParser(string text)
+        public ElementParser(SourceText source)
         {
             var tokens = new List<SyntaxToken>();
-            var analyzer = new LexicalAnalyzer(text);
+            var analyzer = new LexicalAnalyzer(source);
             SyntaxToken token;
             do
             {
