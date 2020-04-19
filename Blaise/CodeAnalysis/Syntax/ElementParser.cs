@@ -75,6 +75,32 @@ namespace Blaise.CodeAnalysis.Syntax
             }
             return ParseBinaryExpressionElement();
         }
+        private ExpressionElement ParseBinaryExpressionElement(int parentPrecedence = 0)
+        {
+            ExpressionElement nextExpression;
+            var unaryOperatorPrecedence = Current.Kind.GetUnaryOperatorPrecedence();
+            if (unaryOperatorPrecedence > 0 && unaryOperatorPrecedence >= parentPrecedence)
+            {
+                var operatorToken = NextToken();
+                var operandExpression = ParseBinaryExpressionElement(unaryOperatorPrecedence);
+                nextExpression = new UnaryExpressionElement(operatorToken, operandExpression);
+            }
+            else
+            {
+                nextExpression = ParsePrimaryExpression();
+
+            }
+            while (true)
+            {
+                var precedence = Current.Kind.GetBinaryOperatorPrecedence();
+                if (precedence == 0 || precedence <= parentPrecedence)
+                    break;
+                var operatorToken = NextToken();
+                var rightExpression = ParseBinaryExpressionElement(precedence);
+                nextExpression = new BinaryExpressionElement(nextExpression, operatorToken, rightExpression);
+            }
+            return nextExpression;
+        }
         private ExpressionElement ParsePrimaryExpression()
         {
             switch (Current.Kind)
@@ -120,35 +146,43 @@ namespace Blaise.CodeAnalysis.Syntax
             return new NameExpressionElement(identifierToken);
         }
 
-        private ExpressionElement ParseBinaryExpressionElement(int parentPrecedence = 0)
+        private StatementElement ParseStatement()
         {
-            ExpressionElement nextExpression;
-            var unaryOperatorPrecedence = Current.Kind.GetUnaryOperatorPrecedence();
-            if (unaryOperatorPrecedence > 0 && unaryOperatorPrecedence >= parentPrecedence)
+            if (Current.Kind == SyntaxKind.BeginKeyword)
             {
-                var operatorToken = NextToken();
-                var operandExpression = ParseBinaryExpressionElement(unaryOperatorPrecedence);
-                nextExpression = new UnaryExpressionElement(operatorToken, operandExpression);
+                return ParseBlockStatement();
             }
             else
             {
-                nextExpression = ParsePrimaryExpression();
+                return ParseExpressionStatement();
+            }
+        }
 
-            }
-            while (true)
+        private BlockStatementElement ParseBlockStatement()
+        {
+            var statementElements = ImmutableArray.CreateBuilder<StatementElement>();
+            var beginKeywordToken = MatchTokenKind(SyntaxKind.BeginKeyword);
+            while (Current.Kind != SyntaxKind.EndKeyword &&
+                  Current.Kind != SyntaxKind.EndOfFileToken)
             {
-                var precedence = Current.Kind.GetBinaryOperatorPrecedence();
-                if (precedence == 0 || precedence <= parentPrecedence)
-                    break;
-                var operatorToken = NextToken();
-                var rightExpression = ParseBinaryExpressionElement(precedence);
-                nextExpression = new BinaryExpressionElement(nextExpression, operatorToken, rightExpression);
+                var statement = ParseStatement();
+                statementElements.Add(statement);
             }
-            return nextExpression;
+            var endKeywordToken = MatchTokenKind(SyntaxKind.EndKeyword);
+            var semicolonToken = MatchTokenKind(SyntaxKind.SemicolonToken);
+            return new BlockStatementElement(beginKeywordToken, statementElements.ToImmutable(), endKeywordToken, semicolonToken);
+            throw new NotImplementedException();
+        }
+
+        private ExpressionStatementElement ParseExpressionStatement()
+        {
+            var expression = ParseExpressionElement();
+            var semicolonToken = MatchTokenKind(SyntaxKind.SemicolonToken);
+            return new ExpressionStatementElement(expression, semicolonToken);
         }
         internal CompilationUnitElement ParseCompilationUnitElement()
         {
-            var element = ParseExpressionElement();
+            var element = ParseStatement();
             var endOfFileToken = MatchTokenKind(SyntaxKind.EndOfFileToken);
             return new CompilationUnitElement(element, endOfFileToken);
         }

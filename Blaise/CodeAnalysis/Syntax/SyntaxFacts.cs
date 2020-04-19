@@ -13,7 +13,7 @@ namespace Blaise.CodeAnalysis.Syntax
                 case SyntaxKind.PlusToken:
                 case SyntaxKind.MinusToken:
                 case SyntaxKind.BangToken:
-                case SyntaxKind.LiteralNotToken:
+                case SyntaxKind.NotKeyword:
                     return 6;
                 default:
                     return 0;
@@ -34,10 +34,10 @@ namespace Blaise.CodeAnalysis.Syntax
                 case SyntaxKind.BangEqualsToken:
                     return 3;
                 case SyntaxKind.AmpersandAmpersandToken:
-                case SyntaxKind.LiteralAndToken:
+                case SyntaxKind.AndKeyword:
                     return 2;
                 case SyntaxKind.PipePipeToken:
-                case SyntaxKind.LiteralOrToken:
+                case SyntaxKind.OrKeyword:
                     return 1;
                 default:
                     return 0;
@@ -49,15 +49,19 @@ namespace Blaise.CodeAnalysis.Syntax
             switch (token.ToLower())
             {
                 case "and":
-                    return SyntaxKind.LiteralAndToken;
+                    return SyntaxKind.AndKeyword;
                 case "or":
-                    return SyntaxKind.LiteralOrToken;
+                    return SyntaxKind.OrKeyword;
                 case "not":
-                    return SyntaxKind.LiteralNotToken;
+                    return SyntaxKind.NotKeyword;
                 case "true":
                     return SyntaxKind.TrueKeyword;
                 case "false":
                     return SyntaxKind.FalseKeyword;
+                case "begin":
+                    return SyntaxKind.BeginKeyword;
+                case "end":
+                    return SyntaxKind.EndKeyword;
                 default:
                     return SyntaxKind.IdentifierToken;
             }
@@ -114,12 +118,22 @@ namespace Blaise.CodeAnalysis.Syntax
                     return "(";
                 case SyntaxKind.CloseParensToken:
                     return ")";
-                case SyntaxKind.LiteralAndToken:
+                case SyntaxKind.OpenBraceToken:
+                    return "{";
+                case SyntaxKind.CloseBraceToken:
+                    return "}";
+                case SyntaxKind.SemicolonToken:
+                    return ";";
+                case SyntaxKind.AndKeyword:
                     return "and";
-                case SyntaxKind.LiteralOrToken:
+                case SyntaxKind.OrKeyword:
                     return "or";
-                case SyntaxKind.LiteralNotToken:
+                case SyntaxKind.NotKeyword:
                     return "not";
+                case SyntaxKind.BeginKeyword:
+                    return "begin";
+                case SyntaxKind.EndKeyword:
+                    return "end";
                 default:
                     return null;
             }

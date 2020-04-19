@@ -2,16 +2,15 @@ namespace Blaise.CodeAnalysis.Syntax
 {
     public sealed class CompilationUnitElement : SyntaxElement
     {
-        public CompilationUnitElement(ExpressionElement expression, SyntaxToken endOfFileToken)
+        public CompilationUnitElement(StatementElement statement, SyntaxToken endOfFileToken)
         {
-            Expression = expression;
+            Statement = statement;
             EndOfFileToken = endOfFileToken;
         }
 
-        public ExpressionElement Expression { get; }
+        public StatementElement Statement { get; }
         public SyntaxToken EndOfFileToken { get; }
 
         public override SyntaxKind Kind => SyntaxKind.CompilationUnit;
     }
-
 }

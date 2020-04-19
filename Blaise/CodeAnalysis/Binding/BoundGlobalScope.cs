@@ -8,18 +8,18 @@ namespace Blaise.CodeAnalysis.Binding
             BoundGlobalScope previous,
             ImmutableArray<Diagnostic> messages,
             ImmutableArray<SymbolEntry> symbols,
-            BoundExpression expression
+            BoundStatement statement
         )
         {
             Previous = previous;
             Messages = messages;
             Symbols = symbols;
-            Expression = expression;
+            Statement = statement;
         }
 
         public BoundGlobalScope Previous { get; }
         public ImmutableArray<Diagnostic> Messages { get; }
         public ImmutableArray<SymbolEntry> Symbols { get; }
-        public BoundExpression Expression { get; }
+        public BoundStatement Statement { get; }
     }
 }

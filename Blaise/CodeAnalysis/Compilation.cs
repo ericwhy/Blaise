@@ -45,7 +45,7 @@ namespace Blaise.CodeAnalysis
             var messages = Syntax.Messages.Concat(GlobalScope.Messages).ToImmutableArray();
             if (messages.Any())
                 return new EvaluationResult(messages, null);
-            var evaluator = new SyntaxEvaluator(GlobalScope.Expression, variableTable);
+            var evaluator = new SyntaxEvaluator(GlobalScope.Statement, variableTable);
             var value = evaluator.Evaluate();
             return new EvaluationResult(ImmutableArray<Diagnostic>.Empty, value);
         }

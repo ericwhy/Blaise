@@ -21,13 +21,18 @@ namespace Blaise.CodeAnalysis.Syntax
         BangEqualsToken,
         OpenParensToken,
         CloseParensToken,
-        LiteralAndToken,
-        LiteralOrToken,
-        LiteralNotToken,
+        OpenBraceToken,
+        CloseBraceToken,
+        SemicolonToken,
         IdentifierToken,
         // Keywords
+        AndKeyword,
+        OrKeyword,
+        NotKeyword,
         TrueKeyword,
         FalseKeyword,
+        BeginKeyword,
+        EndKeyword,
         // Expressions
         LiteralExpression,
         NameExpression,
@@ -35,7 +40,10 @@ namespace Blaise.CodeAnalysis.Syntax
         BinaryExpression,
         ParentheticalExpression,
         AssignmentExpression,
+        // Units and statements
         CompilationUnit,
+        BlockStatement,
+        ExpressionStatement,
     }
 
 }

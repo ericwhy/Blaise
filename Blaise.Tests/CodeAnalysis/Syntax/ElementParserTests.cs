@@ -116,8 +116,8 @@ namespace Blaise.Tests.CodeAnalysis.Syntax
         {
             var syntaxTree = SyntaxTree.ParseTree(expressionText);
             var root = syntaxTree.Root;
-            var expression = root.Expression;
-            return expression;
+            var statement = root.Statement;
+            return Assert.IsType<ExpressionStatementElement>(statement).Expression;
         }
 
         public static IEnumerable<object[]> BinaryOperatorPairsData => from firstOperatorKind in SyntaxFacts.BinaryOperatorKinds
