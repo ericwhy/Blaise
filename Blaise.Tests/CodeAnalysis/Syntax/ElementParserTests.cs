@@ -16,7 +16,7 @@ namespace Blaise.Tests.CodeAnalysis.Syntax
             var firstOperatorKindText = SyntaxFacts.GetSyntaxText(firstOperatorKind);
             var secondOperatorKindText = SyntaxFacts.GetSyntaxText(secondOperatorKind);
             var expressionText = $"a {firstOperatorKindText} b {secondOperatorKindText} c";
-            var expression = SyntaxTree.ParseTree(expressionText).Root;
+            var expression = ParseExpression(expressionText);
 
             if (firstOperatorKindPrecedence >= secondOperatorKindPrecedence)
             {
@@ -70,7 +70,7 @@ namespace Blaise.Tests.CodeAnalysis.Syntax
             var unaryOperatorKindText = SyntaxFacts.GetSyntaxText(unaryOperatorKind);
             var binaryOperatorKindText = SyntaxFacts.GetSyntaxText(binaryOperatorKind);
             var expressionText = $"{unaryOperatorKindText} a {binaryOperatorKindText} b";
-            var expression = SyntaxTree.ParseTree(expressionText).Root;
+            var expression = ParseExpression(expressionText);
 
             if (unaryOperatorKindPrecedence >= binaryOperatorKindPrecedence)
             {
@@ -111,6 +111,15 @@ namespace Blaise.Tests.CodeAnalysis.Syntax
                 }
             }
         }
+
+        private static ExpressionElement ParseExpression(string expressionText)
+        {
+            var syntaxTree = SyntaxTree.ParseTree(expressionText);
+            var root = syntaxTree.Root;
+            var expression = root.Expression;
+            return expression;
+        }
+
         public static IEnumerable<object[]> BinaryOperatorPairsData => from firstOperatorKind in SyntaxFacts.BinaryOperatorKinds
                                                                        from secondOperatorKind in SyntaxFacts.BinaryOperatorKinds
                                                                        select new object[] { firstOperatorKind, secondOperatorKind };
