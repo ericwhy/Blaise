@@ -35,6 +35,7 @@ namespace Blaise.CodeAnalysis.Syntax
         BinaryExpression,
         ParentheticalExpression,
         AssignmentExpression,
+        CompilationUnit,
     }
 
 }

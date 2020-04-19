@@ -9,16 +9,17 @@ namespace Blaise.CodeAnalysis.Syntax
     {
         private readonly SourceText _source;
 
-        public SyntaxTree(SourceText source, SyntaxElement root, SyntaxToken endOfFileToken, ImmutableArray<Diagnostic> messages)
+        private SyntaxTree(SourceText source)
         {
+            var parser = new ElementParser(source);
+            var root = parser.ParseCompilationUnitElement();
+            var messages = parser.Messages.ToImmutableArray();
             _source = source;
             Root = root;
-            EndOfFileToken = endOfFileToken;
             Messages = messages;
         }
 
-        public SyntaxElement Root { get; }
-        public SyntaxToken EndOfFileToken { get; }
+        public CompilationUnitElement Root { get; }
         public ImmutableArray<Diagnostic> Messages { get; }
         public SourceText Source => _source;
 
@@ -28,8 +29,7 @@ namespace Blaise.CodeAnalysis.Syntax
         }
         public static SyntaxTree ParseTree(SourceText source)
         {
-            var parser = new ElementParser(source);
-            return parser.ParseTree();
+            return new SyntaxTree(source);
         }
 
         // Added for testing support

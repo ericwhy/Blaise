@@ -16,28 +16,36 @@ namespace Blaise
             var variableTable = new Dictionary<SymbolEntry, object>();
             bool showTree = false;
             StringBuilder inputLines = new StringBuilder();
+            Compilation previousCompilation = null;
             while (true)
             {
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
                 var isNew = inputLines.Length == 0;
                 if (isNew)
                     Console.Write(": ");
                 else
                     Console.Write("+ ");
+                Console.ResetColor();
                 var inputLine = Console.ReadLine();
                 var isEoi = string.IsNullOrWhiteSpace(inputLine);
                 if (isNew)
                 {
                     if (isEoi)
                         break;
-                    if (inputLine.Equals("!showTree"))
+                    if (inputLine.Equals("--showTree"))
                     {
                         showTree = !showTree;
                         Console.WriteLine(showTree ? "Display of tree is enabled." : "Display of tree is disabled.");
                         continue;
                     }
-                    if (inputLine.Equals("!cls"))
+                    if (inputLine.Equals("--cls"))
                     {
                         Console.Clear();
+                        continue;
+                    }
+                    if (inputLine.Equals("--reset"))
+                    {
+                        previousCompilation = null;
                         continue;
                     }
                 }
@@ -46,7 +54,9 @@ namespace Blaise
                 var syntaxTree = SyntaxTree.ParseTree(source);
                 if (!isEoi && syntaxTree.Messages.Any())
                     continue;
-                var compilation = new Compilation(syntaxTree);
+                var compilation = previousCompilation == null
+                    ? new Compilation(syntaxTree)
+                    : previousCompilation.ContinueWith(syntaxTree);
                 var result = compilation.Evaluate(variableTable);
                 var messages = result.Messages;
 
@@ -58,7 +68,10 @@ namespace Blaise
                 }
                 if (!messages.Any())
                 {
-                    Console.WriteLine($"Result := {result.Value}");
+                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                    Console.WriteLine(result.Value);
+                    Console.ResetColor();
+                    previousCompilation = compilation;
                 }
                 else
                 {
