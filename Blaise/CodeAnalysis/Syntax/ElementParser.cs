@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using Blaise.CodeAnalysis.Text;
@@ -145,12 +146,11 @@ namespace Blaise.CodeAnalysis.Syntax
             }
             return nextExpression;
         }
-
-        public SyntaxTree ParseTree()
+        internal CompilationUnitElement ParseCompilationUnitElement()
         {
             var element = ParseExpressionElement();
             var endOfFileToken = MatchTokenKind(SyntaxKind.EndOfFileToken);
-            return new SyntaxTree(_source, element, endOfFileToken, Messages.ToImmutableArray());
+            return new CompilationUnitElement(element, endOfFileToken);
         }
     }
 

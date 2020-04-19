@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using Blaise.CodeAnalysis.Syntax;
 
@@ -7,14 +8,49 @@ namespace Blaise.CodeAnalysis.Binding
 {
     internal sealed partial class ExpressionBinder
     {
-        private readonly Dictionary<SymbolEntry, object> _variableTable;
         private readonly DiagnosticBag _messages = new DiagnosticBag();
+        private SymbolScope _symbolScope;
 
-        public ExpressionBinder(Dictionary<SymbolEntry, object> variableTable)
+        public ExpressionBinder(SymbolScope outerScope)
         {
-            _variableTable = variableTable;
+            _symbolScope = new SymbolScope(outerScope);
         }
 
+        public static BoundGlobalScope BindGlobalScope(BoundGlobalScope previous, CompilationUnitElement compilation)
+        {
+            var outerScope = CreateOuterScope(previous);
+            var binder = new ExpressionBinder(outerScope);
+            var expression = binder.BindExpression(compilation.Expression);
+            var symbols = binder._symbolScope.DeclaredSymbols;
+            var messages = binder.Messages.ToImmutableArray();
+            if (previous != null)
+            {
+                messages = messages.InsertRange(0, previous.Messages);
+            }
+            return new BoundGlobalScope(previous, messages, symbols, expression);
+        }
+        public static SymbolScope CreateOuterScope(BoundGlobalScope previous)
+        {
+            // We want to invert the global scope chain
+            var scopeStack = new Stack<BoundGlobalScope>();
+            while (previous != null)
+            {
+                scopeStack.Push(previous);
+                previous = previous.Previous;
+            }
+            SymbolScope outerScope = null;
+            while (scopeStack.Count > 0)
+            {
+                previous = scopeStack.Pop();
+                var scope = new SymbolScope(outerScope);
+                foreach (var s in previous.Symbols)
+                {
+                    scope.TryDeclare(s);
+                }
+                outerScope = scope;
+            }
+            return outerScope;
+        }
         public DiagnosticBag Messages => _messages;
         public BoundExpression BindExpression(SyntaxElement expression)
         {
@@ -48,8 +84,7 @@ namespace Blaise.CodeAnalysis.Binding
         private BoundExpression BindNameExpression(NameExpressionElement expression)
         {
             var name = expression.IdentifierToken.Text;
-            var symbol = _variableTable.Keys.FirstOrDefault(s => s.SymbolName == name);
-            if (symbol == null)
+            if (!_symbolScope.TryLookup(name, out var symbol))
             {
                 _messages.ReportUndefinedName(expression.IdentifierToken.TextSpan, name);
                 return new BoundLiteralExpression(0);
@@ -60,12 +95,10 @@ namespace Blaise.CodeAnalysis.Binding
         {
             var identifierName = expression.IdentifierToken.Text;
             var boundExpression = BindExpression(expression.Expression);
-            var currentSymbol = _variableTable.Keys.FirstOrDefault(s => s.SymbolName == identifierName);
             var symbol = new SymbolEntry(identifierName, boundExpression.BoundType);
-            if (currentSymbol != null && currentSymbol.SymbolType != symbol.SymbolType)
+            if (!_symbolScope.TryDeclare(symbol))
             {
-                _variableTable.Remove(currentSymbol);
-                _variableTable[symbol] = null;
+                _messages.ReportSymbolAlreadyDeclared(expression.IdentifierToken.TextSpan, identifierName);
             }
             return new BoundAssignmentExpression(symbol, boundExpression);
         }

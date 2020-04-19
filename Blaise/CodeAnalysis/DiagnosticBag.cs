@@ -52,7 +52,13 @@ namespace Blaise.CodeAnalysis
 
         internal void ReportUndefinedName(TextSpan textSpan, string name)
         {
-            var message = $"Variable name {name} not found.";
+            var message = $"Symbol '{name}' not found.";
+            Report(textSpan, message);
+        }
+
+        internal void ReportSymbolAlreadyDeclared(TextSpan textSpan, string identifierName)
+        {
+            var message = $"Symbol '{identifierName}' is already declared.";
             Report(textSpan, message);
         }
     }
