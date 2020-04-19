@@ -28,7 +28,7 @@ namespace Blaise.CodeAnalysis.Binding
             new BoundUnaryOperator(SyntaxKind.MinusToken, BoundUnaryOperatorKind.ArithmeticNegation, typeof(int)),
             new BoundUnaryOperator(SyntaxKind.PlusToken, BoundUnaryOperatorKind.ArithmeticIdentity, typeof(int)),
             new BoundUnaryOperator(SyntaxKind.BangToken, BoundUnaryOperatorKind.LogicalNegation, typeof(bool)),
-            new BoundUnaryOperator(SyntaxKind.LiteralNotToken, BoundUnaryOperatorKind.LogicalNegation, typeof(bool)),
+            new BoundUnaryOperator(SyntaxKind.NotKeyword, BoundUnaryOperatorKind.LogicalNegation, typeof(bool)),
         };
 
         public static BoundUnaryOperator BindUnaryOperator(SyntaxKind syntaxKind, Type operandType)

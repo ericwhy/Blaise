@@ -102,6 +102,14 @@ namespace Blaise.CodeAnalysis.Syntax
                         _ = MoveNext();
                     }
                     break;
+                case '{':
+                    CurrentKind = SyntaxKind.OpenBraceToken;
+                    _ = MoveNext();
+                    break;
+                case '}':
+                    CurrentKind = SyntaxKind.CloseBraceToken;
+                    _ = MoveNext();
+                    break;
                 case '=':
                     CurrentKind = SyntaxKind.EqualsToken;
                     _ = MoveNext();
@@ -141,6 +149,10 @@ namespace Blaise.CodeAnalysis.Syntax
                         CurrentKind = SyntaxKind.LtGtToken;
                         _ = MoveNext();
                     }
+                    break;
+                case ';':
+                    CurrentKind = SyntaxKind.SemicolonToken;
+                    _ = MoveNext();
                     break;
                 default:
                     if (char.IsDigit(Current))

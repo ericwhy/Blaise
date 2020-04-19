@@ -8,10 +8,11 @@ namespace Blaise.CodeAnalysis
 
     internal sealed class SyntaxEvaluator
     {
-        private readonly BoundExpression _root;
+        private readonly BoundStatement _root;
         private readonly Dictionary<SymbolEntry, object> _variableTable;
+        private object _lastValue;
 
-        public SyntaxEvaluator(BoundExpression root, Dictionary<SymbolEntry, object> variableTable)
+        public SyntaxEvaluator(BoundStatement root, Dictionary<SymbolEntry, object> variableTable)
         {
             _root = root;
             _variableTable = variableTable;
@@ -19,7 +20,36 @@ namespace Blaise.CodeAnalysis
 
         public object Evaluate()
         {
-            return EvaluateExpression(_root);
+            EvaluateStatement(_root);
+            return _lastValue;
+        }
+
+        private void EvaluateStatement(BoundStatement statement)
+        {
+            switch (statement.Kind)
+            {
+                case BoundNodeKind.BlockStatement:
+                    EvaluateBlockStatement((BoundBlockStatement)statement);
+                    break;
+                case BoundNodeKind.ExpressionStatement:
+                    EvaluateExpressionStatement((BoundExpressionStatement)statement);
+                    break;
+                default:
+                    throw new ArgumentException($"Unexpected statement type {statement.Kind}.");
+            }
+        }
+
+        private void EvaluateBlockStatement(BoundBlockStatement statement)
+        {
+            foreach (var expressionStatement in statement.Statements)
+            {
+                EvaluateStatement(expressionStatement);
+            }
+        }
+
+        private void EvaluateExpressionStatement(BoundExpressionStatement statement)
+        {
+            _lastValue = EvaluateExpression(statement.Expression);
         }
 
         private object EvaluateExpression(BoundExpression expression)

@@ -20,14 +20,14 @@ namespace Blaise.CodeAnalysis.Binding
         {
             var outerScope = CreateOuterScope(previous);
             var binder = new ExpressionBinder(outerScope);
-            var expression = binder.BindExpression(compilation.Expression);
+            var statement = binder.BindStatement(compilation.Statement);
             var symbols = binder._symbolScope.DeclaredSymbols;
             var messages = binder.Messages.ToImmutableArray();
             if (previous != null)
             {
                 messages = messages.InsertRange(0, previous.Messages);
             }
-            return new BoundGlobalScope(previous, messages, symbols, expression);
+            return new BoundGlobalScope(previous, messages, symbols, statement);
         }
         public static SymbolScope CreateOuterScope(BoundGlobalScope previous)
         {
@@ -52,6 +52,33 @@ namespace Blaise.CodeAnalysis.Binding
             return outerScope;
         }
         public DiagnosticBag Messages => _messages;
+        public BoundStatement BindStatement(StatementElement statement)
+        {
+            switch (statement.Kind)
+            {
+                case SyntaxKind.BlockStatement:
+                    return BindBlockStatement((BlockStatementElement)statement);
+                case SyntaxKind.ExpressionStatement:
+                    return BindExpressionStatement((ExpressionStatementElement)statement);
+                default:
+                    throw new ArgumentException($"ERROR: Unexpected statement expression type {statement.Kind}.");
+            }
+        }
+        private BoundStatement BindExpressionStatement(ExpressionStatementElement element)
+        {
+            var expression = BindExpression(element.Expression);
+            return new BoundExpressionStatement(expression);
+        }
+        private BoundStatement BindBlockStatement(BlockStatementElement element)
+        {
+            var boundStatements = ImmutableArray.CreateBuilder<BoundStatement>();
+            foreach (var statementElement in element.Statements)
+            {
+                boundStatements.Add(BindStatement(statementElement));
+            }
+            return new BoundBlockStatement(boundStatements.ToImmutable());
+        }
+
         public BoundExpression BindExpression(SyntaxElement expression)
         {
             switch (expression.Kind)
@@ -147,7 +174,7 @@ namespace Blaise.CodeAnalysis.Binding
                 switch (kind)
                 {
                     case SyntaxKind.BangToken:
-                    case SyntaxKind.LiteralNotToken:
+                    case SyntaxKind.NotKeyword:
                         return BoundUnaryOperatorKind.LogicalNegation;
                 }
             }
@@ -174,10 +201,10 @@ namespace Blaise.CodeAnalysis.Binding
                 switch (kind)
                 {
                     case SyntaxKind.AmpersandAmpersandToken:
-                    case SyntaxKind.LiteralAndToken:
+                    case SyntaxKind.AndKeyword:
                         return BoundBinaryOperatorKind.LogicalAnd;
                     case SyntaxKind.PipePipeToken:
-                    case SyntaxKind.LiteralOrToken:
+                    case SyntaxKind.OrKeyword:
                         return BoundBinaryOperatorKind.LogicalOr;
                 }
             }
