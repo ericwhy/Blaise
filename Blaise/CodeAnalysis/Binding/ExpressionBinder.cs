@@ -95,10 +95,15 @@ namespace Blaise.CodeAnalysis.Binding
         {
             var identifierName = expression.IdentifierToken.Text;
             var boundExpression = BindExpression(expression.Expression);
-            var symbol = new SymbolEntry(identifierName, boundExpression.BoundType);
-            if (!_symbolScope.TryDeclare(symbol))
+            if (!_symbolScope.TryLookup(identifierName, out SymbolEntry symbol))
             {
-                _messages.ReportSymbolAlreadyDeclared(expression.IdentifierToken.TextSpan, identifierName);
+                symbol = new SymbolEntry(identifierName, boundExpression.BoundType);
+                _symbolScope.TryDeclare(symbol);
+            }
+            if (boundExpression.BoundType != symbol.SymbolType)
+            {
+                _messages.ReportInvalidTypeConversion(expression.Expression.TextSpan, boundExpression.BoundType, symbol.SymbolType);
+                return boundExpression;
             }
             return new BoundAssignmentExpression(symbol, boundExpression);
         }

@@ -56,10 +56,11 @@ namespace Blaise.CodeAnalysis
             Report(textSpan, message);
         }
 
-        internal void ReportSymbolAlreadyDeclared(TextSpan textSpan, string identifierName)
+        internal void ReportInvalidTypeConversion(TextSpan textSpan, Type toType, Type fromType)
         {
-            var message = $"Symbol '{identifierName}' is already declared.";
+            var message = $"Invalid type conversion from '{fromType}' to '{toType}'.";
             Report(textSpan, message);
         }
+
     }
 }
