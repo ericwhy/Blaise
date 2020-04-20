@@ -46,7 +46,7 @@ namespace Blaise.CodeAnalysis.Syntax
 
         public static SyntaxKind GetLiteralKind(string token)
         {
-            switch (token.ToLower())
+            switch (token)
             {
                 case "and":
                     return SyntaxKind.AndKeyword;
@@ -62,6 +62,16 @@ namespace Blaise.CodeAnalysis.Syntax
                     return SyntaxKind.BeginKeyword;
                 case "end":
                     return SyntaxKind.EndKeyword;
+                case "var":
+                    return SyntaxKind.VarKeyword;
+                case "Int32":
+                    return SyntaxKind.Int32Type;
+                case "String":
+                    return SyntaxKind.StringType;
+                case "Bool":
+                    return SyntaxKind.BoolType;
+                case "Double":
+                    return SyntaxKind.DoubleType;
                 default:
                     return SyntaxKind.IdentifierToken;
             }
@@ -134,6 +144,16 @@ namespace Blaise.CodeAnalysis.Syntax
                     return "begin";
                 case SyntaxKind.EndKeyword:
                     return "end";
+                case SyntaxKind.VarKeyword:
+                    return "var";
+                case SyntaxKind.Int32Type:
+                    return "Int32";
+                case SyntaxKind.StringType:
+                    return "String";
+                case SyntaxKind.BoolType:
+                    return "Bool";
+                case SyntaxKind.DoubleType:
+                    return "Double";
                 default:
                     return null;
             }

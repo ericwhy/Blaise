@@ -25,6 +25,7 @@ namespace Blaise.CodeAnalysis.Syntax
         CloseBraceToken,
         SemicolonToken,
         IdentifierToken,
+
         // Keywords
         AndKeyword,
         OrKeyword,
@@ -33,6 +34,14 @@ namespace Blaise.CodeAnalysis.Syntax
         FalseKeyword,
         BeginKeyword,
         EndKeyword,
+        VarKeyword,
+
+        // Types
+        Int32Type,
+        StringType,
+        BoolType,
+        DoubleType,
+
         // Expressions
         LiteralExpression,
         NameExpression,
@@ -40,10 +49,11 @@ namespace Blaise.CodeAnalysis.Syntax
         BinaryExpression,
         ParentheticalExpression,
         AssignmentExpression,
+
         // Units and statements
         CompilationUnit,
         BlockStatement,
         ExpressionStatement,
+        VarStatement,
     }
-
 }

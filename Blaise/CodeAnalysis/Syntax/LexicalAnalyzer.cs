@@ -163,7 +163,7 @@ namespace Blaise.CodeAnalysis.Syntax
                     {
                         ReadWhitespace();
                     }
-                    else if (char.IsLetter(Current))
+                    else if (Current.IsIdentifierStart())
                     {
                         ReadLiteral();
                     }
@@ -180,7 +180,7 @@ namespace Blaise.CodeAnalysis.Syntax
 
         private void ReadLiteral()
         {
-            while (char.IsLetter(Current))
+            while (Current.IsIdentifier())
             {
                 _ = MoveNext();
             }

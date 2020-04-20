@@ -62,5 +62,16 @@ namespace Blaise.CodeAnalysis
             Report(textSpan, message);
         }
 
+        internal void ReportInvalidTypeSpecifier(TextSpan textSpan, SyntaxToken typeToken)
+        {
+            var message = $"Invalid type specifier {typeToken.Text}.";
+            Report(textSpan, message);
+        }
+
+        internal void ReportVariableAlreadyDeclared(TextSpan textSpan, string name)
+        {
+            var message = $"Variable '{name}' is already declared.";
+            Report(textSpan, message);
+        }
     }
 }

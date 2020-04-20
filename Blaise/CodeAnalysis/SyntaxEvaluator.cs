@@ -28,6 +28,9 @@ namespace Blaise.CodeAnalysis
         {
             switch (statement.Kind)
             {
+                case BoundNodeKind.VarStatement:
+                    EvaluateVarStatement((BoundVarStatement)statement);
+                    break;
                 case BoundNodeKind.BlockStatement:
                     EvaluateBlockStatement((BoundBlockStatement)statement);
                     break;
@@ -37,6 +40,11 @@ namespace Blaise.CodeAnalysis
                 default:
                     throw new ArgumentException($"Unexpected statement type {statement.Kind}.");
             }
+        }
+
+        private void EvaluateVarStatement(BoundVarStatement statement)
+        {
+            _variableTable[statement.Symbol] = null;
         }
 
         private void EvaluateBlockStatement(BoundBlockStatement statement)

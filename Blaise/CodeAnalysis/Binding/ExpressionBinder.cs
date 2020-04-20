@@ -56,6 +56,8 @@ namespace Blaise.CodeAnalysis.Binding
         {
             switch (statement.Kind)
             {
+                case SyntaxKind.VarStatement:
+                    return BindVarStatement((VarStatementElement)statement);
                 case SyntaxKind.BlockStatement:
                     return BindBlockStatement((BlockStatementElement)statement);
                 case SyntaxKind.ExpressionStatement:
@@ -64,6 +66,41 @@ namespace Blaise.CodeAnalysis.Binding
                     throw new ArgumentException($"ERROR: Unexpected statement expression type {statement.Kind}.");
             }
         }
+
+        private BoundStatement BindVarStatement(VarStatementElement statement)
+        {
+            var name = statement.Identifier.Text;
+            Type varType = GetTypeFromToken(statement.TypeToken);
+            if (varType == null)
+            {
+                Messages.ReportInvalidTypeSpecifier(statement.TypeToken.TextSpan, statement.TypeToken);
+                varType = typeof(object);
+            }
+            var symbolEntry = new SymbolEntry(name, varType);
+            if (!_symbolScope.TryDeclare(symbolEntry))
+            {
+                Messages.ReportVariableAlreadyDeclared(statement.Identifier.TextSpan, name);
+            }
+            return new BoundVarStatement(symbolEntry);
+        }
+
+        private Type GetTypeFromToken(SyntaxToken typeToken)
+        {
+            switch (typeToken.Kind)
+            {
+                case SyntaxKind.Int32Type:
+                    return typeof(Int32);
+                case SyntaxKind.StringType:
+                    return typeof(String);
+                case SyntaxKind.BoolType:
+                    return typeof(Boolean);
+                case SyntaxKind.DoubleType:
+                    return typeof(Double);
+                default:
+                    return null;
+            }
+        }
+
         private BoundStatement BindExpressionStatement(ExpressionStatementElement element)
         {
             var expression = BindExpression(element.Expression);
@@ -71,11 +108,13 @@ namespace Blaise.CodeAnalysis.Binding
         }
         private BoundStatement BindBlockStatement(BlockStatementElement element)
         {
+            _symbolScope = new SymbolScope(_symbolScope);
             var boundStatements = ImmutableArray.CreateBuilder<BoundStatement>();
             foreach (var statementElement in element.Statements)
             {
                 boundStatements.Add(BindStatement(statementElement));
             }
+            _symbolScope = _symbolScope.OuterScope;
             return new BoundBlockStatement(boundStatements.ToImmutable());
         }
 
@@ -124,8 +163,8 @@ namespace Blaise.CodeAnalysis.Binding
             var boundExpression = BindExpression(expression.Expression);
             if (!_symbolScope.TryLookup(identifierName, out SymbolEntry symbol))
             {
-                symbol = new SymbolEntry(identifierName, boundExpression.BoundType);
-                _symbolScope.TryDeclare(symbol);
+                _messages.ReportUndefinedName(expression.IdentifierToken.TextSpan, identifierName);
+                return boundExpression;
             }
             if (boundExpression.BoundType != symbol.SymbolType)
             {

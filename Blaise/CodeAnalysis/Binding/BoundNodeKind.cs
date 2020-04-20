@@ -5,6 +5,7 @@ namespace Blaise.CodeAnalysis.Binding
         // Statements
         BlockStatement,
         ExpressionStatement,
+        VarStatement,
 
         // Expressions
         LiteralExpression,

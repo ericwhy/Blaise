@@ -148,14 +148,25 @@ namespace Blaise.CodeAnalysis.Syntax
 
         private StatementElement ParseStatement()
         {
-            if (Current.Kind == SyntaxKind.BeginKeyword)
+            switch (Current.Kind)
             {
-                return ParseBlockStatement();
+                case SyntaxKind.BeginKeyword:
+                    return ParseBlockStatement();
+                case SyntaxKind.VarKeyword:
+                    return ParseVarStatement();
+                default:
+                    return ParseExpressionStatement();
             }
-            else
-            {
-                return ParseExpressionStatement();
-            }
+        }
+
+        private StatementElement ParseVarStatement()
+        {
+            var varKeyword = MatchTokenKind(SyntaxKind.VarKeyword);
+            var identifierToken = MatchTokenKind(SyntaxKind.IdentifierToken);
+            var colonToken = MatchTokenKind(SyntaxKind.ColonToken);
+            var typeToken = NextToken();
+            var semicolonToken = MatchTokenKind(SyntaxKind.SemicolonToken);
+            return new VarStatementElement(varKeyword, identifierToken, colonToken, typeToken, semicolonToken);
         }
 
         private BlockStatementElement ParseBlockStatement()
@@ -171,7 +182,6 @@ namespace Blaise.CodeAnalysis.Syntax
             var endKeywordToken = MatchTokenKind(SyntaxKind.EndKeyword);
             var semicolonToken = MatchTokenKind(SyntaxKind.SemicolonToken);
             return new BlockStatementElement(beginKeywordToken, statementElements.ToImmutable(), endKeywordToken, semicolonToken);
-            throw new NotImplementedException();
         }
 
         private ExpressionStatementElement ParseExpressionStatement()
