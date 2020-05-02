@@ -126,6 +126,8 @@ namespace Blaise.Tests.CodeAnalysis.Syntax
             var secondKindIsKeyword = secondKind.ToString().EndsWith("Keyword");
             var firstKindIsLiteralOperator = firstKind.ToString().StartsWith("Literal");
             var secondKindIsLiteralOperator = secondKind.ToString().StartsWith("Literal");
+            var firstKindIsType = firstKind.ToString().EndsWith("Type");
+            var secondKindIsType = secondKind.ToString().EndsWith("Type");
 
             if (firstKind == SyntaxKind.IdentifierToken && secondKind == SyntaxKind.IdentifierToken)
                 return true;
@@ -150,6 +152,12 @@ namespace Blaise.Tests.CodeAnalysis.Syntax
             if (firstKind == SyntaxKind.ColonToken && secondKind == SyntaxKind.EqualsToken)
                 return true;
             if (firstKind == SyntaxKind.BangToken && secondKind == SyntaxKind.EqualsToken)
+                return true;
+            if (firstKindIsType || secondKindIsType)
+                return true;
+            if (firstKindIsKeyword && secondKind == SyntaxKind.IntegerToken)
+                return true;
+            if (firstKind == SyntaxKind.IdentifierToken && secondKind == SyntaxKind.IntegerToken)
                 return true;
             return false;
         }

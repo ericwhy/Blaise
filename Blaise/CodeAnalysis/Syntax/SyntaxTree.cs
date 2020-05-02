@@ -13,10 +13,9 @@ namespace Blaise.CodeAnalysis.Syntax
         {
             var parser = new ElementParser(source);
             var root = parser.ParseCompilationUnitElement();
-            var messages = parser.Messages.ToImmutableArray();
             _source = source;
             Root = root;
-            Messages = messages;
+            Messages = parser.Messages.ToImmutableArray();
         }
 
         public CompilationUnitElement Root { get; }

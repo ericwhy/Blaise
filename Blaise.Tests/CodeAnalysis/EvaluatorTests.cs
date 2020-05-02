@@ -24,8 +24,8 @@ namespace Blaise.Tests.CodeAnalysis
         [InlineData("(1=1) || (1=2);", true)]
         [InlineData("(1=1) and (1=2);", false)]
         [InlineData("(1=1) && (1=2);", false)]
-        [InlineData("a := 10;", 10)]
-        [InlineData("(a := 10) + 10;", 20)]
+        [InlineData("begin var a:Int32; a := 10; end;", 10)]
+        [InlineData("begin var a:Int32; (a := 10) + 10; end;", 20)]
         public void SyntaxFact_GetText_RoundTrips(string text, object expectedResult)
         {
             var syntaxTree = SyntaxTree.ParseTree(text);
