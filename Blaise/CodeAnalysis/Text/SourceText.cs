@@ -21,7 +21,8 @@ namespace Blaise.CodeAnalysis.Text
             {
                 nextIndex = lowerIndex + (upperIndex - lowerIndex) / 2;
                 var line = Lines[nextIndex];
-                if (position == line.Start) // did we find the line that contains position?
+                if (position >= line.Start &&
+                    position <= line.End) // did we find the line that contains position?
                 {
                     return nextIndex;
                 }

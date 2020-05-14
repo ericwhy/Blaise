@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Blaise.CodeAnalysis;
 using Blaise.CodeAnalysis.Syntax;
@@ -34,6 +35,48 @@ namespace Blaise.Tests.CodeAnalysis
             var result = compiler.Evaluate(symbolTable);
             Assert.Empty(result.Messages);
             Assert.Equal(expectedResult, result.Value);
+        }
+
+        [Fact]
+        public void Evaluator_Reports_VariableRedeclaration()
+        {
+            string text = @"
+            begin
+                var a: Int32;
+                begin
+                    var a: Int32;
+                end;
+                var [a]: Int32;
+            end;
+            ";
+            var expectedMessages = new List<string>();
+            expectedMessages.Add("Variable 'a' is already declared.");
+            AssertExpectedMessages(text, expectedMessages);
+        }
+
+        private void AssertExpectedMessages(string text, List<string> expectedMessages)
+        {
+            var annotatedText = AnnotatedText.ParseText(text);
+            if (annotatedText.TextSpans.Length > expectedMessages.Count)
+            {
+                throw new ArgumentException("There are more marked spans than expected message.");
+            }
+            else if (annotatedText.TextSpans.Length < expectedMessages.Count)
+            {
+                throw new ArgumentException("There are more expected messages then marked spanse.");
+            }
+            var syntaxTree = SyntaxTree.ParseTree(annotatedText.Text);
+            var compilation = new Compilation(syntaxTree);
+            var result = compilation.Evaluate(new Dictionary<SymbolEntry, object>());
+            Assert.Equal(expectedMessages.Count, result.Messages.Length);
+            for (var i = 0; i < expectedMessages.Count; i++)
+            {
+                var expected = expectedMessages[i];
+                var message = result.Messages[i];
+                Assert.Equal(expected, message.Message);
+                var span = annotatedText.TextSpans[i];
+                Assert.Equal(span, message.Span);
+            }
         }
     }
 }
